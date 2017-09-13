@@ -1,6 +1,6 @@
-# What is Templatex?
+# What is Tempera?
 
-Templatex is a high-performance and type-safe template engine.
+Tempera is a high-performance and type-safe template engine.
 
 # Get started
 
