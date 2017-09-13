@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/kasonyang/tempera.svg?branch=master)](https://travis-ci.org/kasonyang/tempera)
+
 # What is Tempera?
 
 Tempera is a high-performance and type-safe template engine.
