@@ -1,0 +1,16 @@
+apply plugin:'java'
+apply plugin:'application'
+mainClassName='site.kason.tempera.shell.Main'
+repositories {
+  mavenCentral()
+}
+dependencies {
+  compile 'commons-io:commons-io:2.5'
+  compile 'commons-cli:commons-cli:1.3.1'
+  compile 'site.kason.kalang:kalang-compiler:1.0.0'
+  compile 'site.kason:kamons:1.0.0'
+  testCompile 'junit:junit:4.12'
+}
+
+
+apply from:'maven-publish.gradle'
