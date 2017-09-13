@@ -1,0 +1,36 @@
+package site.kason.tempera.lexer;
+
+import site.kason.tempera.lex.TokenInfo;
+import site.kason.tempera.lex.nfa.NFA;
+
+/**
+ *
+ * @author Kason Yang
+ */
+public class TexTokenInfo implements TokenInfo {
+
+    private int priority;
+    private NFA nfa;
+    private final TexTokenType type;
+
+    public TexTokenInfo(TexTokenType type, NFA nfa,int priority) {
+        this.priority = priority;
+        this.nfa = nfa;
+        this.type = type;
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
+    }
+
+    @Override
+    public NFA getNFA() {
+        return nfa;
+    }
+
+    public TexTokenType getType() {
+        return type;
+    }
+
+}

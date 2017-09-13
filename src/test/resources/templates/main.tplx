@@ -1,0 +1,4 @@
+{{var names:List<String>}}
+{{for n,ctx in names}}
+<p>{{n}}{{ctx.index}}{{ctx.index+1}}</p>
+{{/for}}
