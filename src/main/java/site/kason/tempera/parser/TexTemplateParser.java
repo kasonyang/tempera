@@ -64,8 +64,10 @@ import site.kason.tempera.engine.TemplateAstLoader;
 import site.kason.tempera.engine.TemplateNotFoundException;
 import site.kason.tempera.lex.LexException;
 import site.kason.tempera.lex.OffsetRange;
+import site.kason.tempera.lexer.BufferedTokenStream;
 import site.kason.tempera.lexer.TexLexer;
 import site.kason.tempera.lexer.TexToken;
+import site.kason.tempera.lexer.TexTokenStream;
 import site.kason.tempera.lexer.TexTokenType;
 import static site.kason.tempera.lexer.TexTokenType.*;
 import site.kason.tempera.lexer.TokenStream;
@@ -83,7 +85,7 @@ public class TexTemplateParser {
 
   private TemplateAstLoader astLoader;
 
-  private TokenStream tokenStream;
+  private BufferedTokenStream tokenStream;
 
   private TexToken token;
   private ClassNode classNode;
@@ -103,13 +105,13 @@ public class TexTemplateParser {
   private final TypeNameResolver typeNameResolver;
 
   public TexTemplateParser(String templateName, String template, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
-    this(templateName, new TokenStream(new TexLexer(template), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
+    this(templateName, new TexTokenStream(new TexLexer(template), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
   }
 
   public TexTemplateParser(String templateName, TokenStream ts, TemplateAstLoader templateAstLoader, TemplateClassLoader classParser) {
     this.classParser = classParser;
     this.astLoader = templateAstLoader;
-    this.tokenStream = ts;
+    this.tokenStream = new BufferedTokenStream(ts);
     ClassNode cn = new ClassNode();
     cn.name = templateName;
     cn.modifier = Modifier.PUBLIC;
