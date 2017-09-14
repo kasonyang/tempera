@@ -15,6 +15,7 @@ import site.kason.tempera.engine.TemplateAstLoader;
 import site.kason.tempera.engine.TemplateNotFoundException;
 import site.kason.tempera.lex.LexException;
 import site.kason.tempera.lexer.TexLexer;
+import site.kason.tempera.lexer.TexTokenStream;
 import site.kason.tempera.lexer.TokenStream;
 import site.kason.tempera.parser.TemplateClassLoader;
 import site.kason.tempera.parser.TexTemplateParser;
@@ -44,7 +45,7 @@ public class TexTemplateParserTest {
   private String render(String tpl, Map<String, Object> data, Map<String, String> types)
           throws Exception {
     TexLexer lexer = new TexLexer(tpl);
-    TokenStream ts = new TokenStream(lexer);
+    TokenStream ts = new TexTokenStream(lexer);
     TexTemplateParser parser = new TexTemplateParser("Test", ts, new TemplateAstLoader() {
       @Override
       public ClassNode loadTemplateAst(String templateName) throws IOException {
