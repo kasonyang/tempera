@@ -28,12 +28,15 @@ public class BufferedTokenStream implements TokenStream {
   }
   
   public TexToken LA(int offset) throws LexException{
-    while(bufferedTokens.size()<=offset){
+    if(offset<=0){
+      throw new IllegalArgumentException("offset should be greater than 0");
+    }
+    while(bufferedTokens.size()<offset){
       //TODO maybe EOF
       TexToken next = tokenStream.nextToken();
       bufferedTokens.add(next);
     }
-    return bufferedTokens.get(offset);
+    return bufferedTokens.get(offset-1);
   }
 
 }
