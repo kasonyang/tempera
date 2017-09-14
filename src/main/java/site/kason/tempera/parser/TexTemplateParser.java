@@ -183,11 +183,12 @@ public class TexTemplateParser {
     //this.classes.clear();
     try {
       consume();
-      while (isToken(VAR)) {
-        consume();
+      while (isToken(START_TAG) && isTokenLA(1,VAR)) {
+        consume(2);
         String name = expect(IDENTITY).getText();
         expect(COLON);
         this.setVarType(name, this.scanType());
+        expect(END_TAG);
       }
       this.createDataField(classNode);
       MethodNode md = classNode.createMethodNode(Types.VOID_TYPE, "execute", Modifier.PUBLIC);
@@ -216,14 +217,28 @@ public class TexTemplateParser {
     }
     return clazz;
   }
+  
+  private void consume(int count) throws LexException{
+    for(int i=0;i<count;i++){
+      consume();
+    }
+  }
 
   private void consume() throws LexException {
     token = tokenStream.nextToken();
   }
+  
+  private boolean isTokenLA(int count,TexTokenType... type) throws LexException{
+    return isToken(tokenStream.LA(count),type);
+  }
 
-  private boolean isToken(TexTokenType... type) {
+  private boolean isToken(TexTokenType... type){
+    return isToken(token,type);
+  }
+  
+  private static boolean isToken(TexToken tk,TexTokenType... type) {
     for (TexTokenType t : type) {
-      if (token.getTokenType().equals(t)) {
+      if (tk.getTokenType().equals(t)) {
         return true;
       }
     }
@@ -283,6 +298,12 @@ public class TexTemplateParser {
   private ExprStmt getCallStmt(String methodName, ExprNode... exprs) {
     return new ExprStmt(this.getCallExpr(methodName, exprs));
   }
+  
+  private void expectEnclosdTag(TexTokenType type) throws LexException{
+    expect(START_TAG);
+    expect(type);
+    expect(END_TAG);
+  }
 
   private TexToken expect(TexTokenType type) throws LexException {
     if (!type.equals(token.getTokenType())) {
@@ -300,18 +321,24 @@ public class TexTemplateParser {
   }
 
   private Statement ifStmt() throws LexException, IOException, TemplateNotFoundException {
-    consume();
+    expect(START_TAG);
+    expect(IF);
     ExprNode condition = expr();
+    if(condition==null){
+      throw Exceptions.unexpectedToken(token);
+    }
     if (!Types.BOOLEAN_TYPE.equals(condition.getType())) {
       condition = getCallExpr("toBoolean", condition);
     }
+    expect(END_TAG);
     IfStmt ifStmt = new IfStmt(condition);
     this.createBlockStmt(ifStmt.getTrueBody());
-    if (isToken(ELSE)) {
-      consume();
+    if (isToken(START_TAG) && isTokenLA(1,ELSE)) {
+      consume(2);
+      expect(END_TAG);
       this.createBlockStmt(ifStmt.getFalseBody());
     }
-    expect(END_IF);
+    expectEnclosdTag(END_IF);
     return ifStmt;
   }
 
@@ -357,6 +384,7 @@ public class TexTemplateParser {
   }
 
   private Statement forStmt() throws LexException, IOException, TemplateNotFoundException {
+    expect(START_TAG);
     expect(FOR);
     TexToken varToken = expect(IDENTITY);
     TexToken contextToken = null;
@@ -366,7 +394,8 @@ public class TexTemplateParser {
     }
     expect(IN);
     ExprNode collectionExpr = expr();
-
+    expect(END_TAG);
+    
     BlockStmt forStmt = /*currentBlock =*/ new BlockStmt();
     LocalVarNode iteratorVar = this.declareLocalVar(Types.requireClassType(IterateContext.class.getName()), contextToken == null ? null : contextToken.getText());
     forStmt.statements.add(new VarDeclStmt(iteratorVar));
@@ -391,13 +420,15 @@ public class TexTemplateParser {
     );
     this.createBlockStmt(loopStmt.getLoopBody());
     forStmt.statements.add(loopStmt);
-    expect(END_FOR);
+    expectEnclosdTag(END_FOR);
     return forStmt;
   }
 
   private Statement placeholder() throws LexException, IOException, TemplateNotFoundException {
-    consume();
+    expect(START_TAG);
+    expect(PLACEHOLDER);
     TexToken id = expect(IDENTITY);
+    expect(END_TAG);
     String methodName = this.createPlaceholderMethodName(id.getText());
     MethodNode m = this.classNode.createMethodNode(Types.VOID_TYPE, methodName, Modifier.PROTECTED);
     LocalVarNode[] accessibleVars = this.getAllAccessibleVars();
@@ -409,7 +440,7 @@ public class TexTemplateParser {
     this.enterNewMethod(m);
     this.createBlockStmt(m.getBody());
     this.exitMethod();
-    expect(END_PLACEHOLDER);
+    expectEnclosdTag(END_PLACEHOLDER);
     try {
       return new ExprStmt(ObjectInvokeExpr.create(new ThisExpr(this.classNode), methodName, arguments));
     } catch (MethodNotFoundException | AmbiguousMethodException ex) {
@@ -418,8 +449,10 @@ public class TexTemplateParser {
   }
 
   private Statement layout() throws LexException, TemplateNotFoundException, IOException {
-    consume();
+    expect(START_TAG);
+    expect(LAYOUT);
     TexToken parentId = expect(IDENTITY);
+    expect(END_TAG);
     ClassNode parentAst = this.astLoader.loadTemplateAst(parentId.getText());
     ClassNode oldClass = this.classNode;
     String clazzName = this.createClassNameForLayout(parentId.getText());
@@ -430,7 +463,7 @@ public class TexTemplateParser {
     this.body();
     AstUtil.createEmptyConstructor(classNode);
     classNode = oldClass;
-    expect(END_LAYOUT);
+    expectEnclosdTag(END_LAYOUT);
     try {
       return this.getCallStmt("append",
               ObjectInvokeExpr.create(
@@ -445,8 +478,10 @@ public class TexTemplateParser {
   }
 
   private Statement replace() throws LexException, IOException, TemplateNotFoundException {
-    consume();
+    expect(START_TAG);
+    expect(REPLACE);
     TexToken replaceToken = expect(IDENTITY);
+    expect(END_TAG);
     String replaceId = replaceToken.getText();
     String replateMethodName = this.createPlaceholderMethodName(replaceId);
     ObjectType superType = this.classNode.superType;
@@ -468,17 +503,29 @@ public class TexTemplateParser {
       throw new SemanticException(replaceToken.getOffset(), "placeholder not found:" + replaceId);
     }
     this.createBlockStmt(overrideMethod.getBody());
-    expect(END_REPLACE);
+    expectEnclosdTag(END_REPLACE);
     this.exitMethod();
     return new BlockStmt();
   }
 
   @Nullable
   public Statement texStatement() throws LexException, IOException, TemplateNotFoundException {
-    Statement res;
     switch (token.getTokenType()) {
       case TEXT:
         return text();
+      case START_TAG:
+        return this.nonTextStatement();
+      default: return null;
+    }
+  }
+  
+  @Nullable
+  private Statement nonTextStatement() throws LexException, IOException{
+    if(!isToken(START_TAG)){
+      throw Exceptions.unexpectedToken(token);
+    }
+    TexToken la1 = tokenStream.LA(1);
+    switch (la1.getTokenType()) {
       case IF:
         return ifStmt();
       case FOR:
@@ -490,14 +537,26 @@ public class TexTemplateParser {
       case REPLACE:
         return replace();
       default:
-        try {
+        if(isExprPrefix(la1.getTokenType())){
+          expect(START_TAG);
           ExprNode expr = this.expr();
-          res = getCallStmt("append", expr);
+          ExprStmt res = getCallStmt("append", expr);
+          expect(END_TAG);
           return res;
-        } catch (SyntaxException ex) {
+        }else{
           return null;
         }
     }
+  }
+  
+  private boolean isExprPrefix(TexTokenType type){
+    TexTokenType[] prefixArray = new TexTokenType[]{
+      LPAREN,IDENTITY,NUMBER,STRING,LOGIC_NOT,LBRACK,LBRACE
+    };
+    for(TexTokenType t:prefixArray){
+      if(t.equals(type)) return true;
+    }
+    return false;
   }
 
   private ExprNode expr() throws LexException {
