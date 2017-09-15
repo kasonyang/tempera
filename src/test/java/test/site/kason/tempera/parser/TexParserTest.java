@@ -10,8 +10,8 @@ import site.kason.tempera.engine.TemplateAstLoader;
 import site.kason.tempera.engine.TemplateNotFoundException;
 import site.kason.tempera.lex.LexException;
 import site.kason.tempera.parser.TemplateClassLoader;
-import site.kason.tempera.parser.TexTemplateBase;
-import site.kason.tempera.parser.TexTemplateParser;
+import site.kason.tempera.parser.Renderer;
+import site.kason.tempera.parser.TemplateParser;
 
 /**
  *
@@ -26,7 +26,7 @@ public class TexParserTest {
     public void test() throws Exception{
         StringBuilder sb = new StringBuilder();
         sb.append("{{var name:java.lang.String}}Hello,{{name}}!");
-        TexTemplateParser parser = new TexTemplateParser("test",sb.toString(),new TemplateAstLoader() {
+        TemplateParser parser = new TemplateParser("test",sb.toString(),new TemplateAstLoader() {
             @Override
             public ClassNode loadTemplateAst(String templateName) throws TemplateNotFoundException, LexException, IOException {
                 throw new UnsupportedOperationException("Not supported yet.");
@@ -37,7 +37,7 @@ public class TexParserTest {
                 return AstLoader.BASE_AST_LOADER.loadAst(className);
             }
         },new TemplateClassLoader());
-        Class<TexTemplateBase> clazz = parser.parse();
+        Class<Renderer> clazz = parser.parse();
         assertNotNull(clazz);
     }
     

@@ -18,8 +18,8 @@ import site.kason.tempera.lexer.TexLexer;
 import site.kason.tempera.lexer.TexTokenStream;
 import site.kason.tempera.lexer.TokenStream;
 import site.kason.tempera.parser.TemplateClassLoader;
-import site.kason.tempera.parser.TexTemplateParser;
-import site.kason.tempera.parser.TexTemplateBase;
+import site.kason.tempera.parser.TemplateParser;
+import site.kason.tempera.parser.Renderer;
 
 /**
  *
@@ -46,7 +46,7 @@ public class TexTemplateParserTest {
           throws Exception {
     TexLexer lexer = new TexLexer(tpl);
     TokenStream ts = new TexTokenStream(lexer);
-    TexTemplateParser parser = new TexTemplateParser("Test", ts, new TemplateAstLoader() {
+    TemplateParser parser = new TemplateParser("Test", ts, new TemplateAstLoader() {
       @Override
       public ClassNode loadTemplateAst(String templateName) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -60,8 +60,8 @@ public class TexTemplateParserTest {
     for (Map.Entry<String, String> e : types.entrySet()) {
       parser.setVarType(e.getKey(), e.getValue());
     }
-    Class<TexTemplateBase> tplClazz = parser.parse();
-    TexTemplateBase inst = tplClazz.newInstance();
+    Class<Renderer> tplClazz = parser.parse();
+    Renderer inst = tplClazz.newInstance();
     return inst.render(data);
   }
 

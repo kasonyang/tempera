@@ -4,14 +4,10 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import kalang.AmbiguousMethodException;
 import kalang.AstNotFoundException;
@@ -29,7 +25,6 @@ import kalang.ast.IfStmt;
 import kalang.ast.LocalVarNode;
 import kalang.ast.LogicExpr;
 import kalang.ast.LoopStmt;
-import kalang.ast.MathExpr;
 import kalang.ast.MethodNode;
 import kalang.ast.MultiStmtExpr;
 import kalang.ast.NewArrayExpr;
@@ -63,7 +58,6 @@ import kalang.util.StringLiteralUtil;
 import site.kason.tempera.engine.TemplateAstLoader;
 import site.kason.tempera.engine.TemplateNotFoundException;
 import site.kason.tempera.lex.LexException;
-import site.kason.tempera.lex.OffsetRange;
 import site.kason.tempera.lexer.BufferedTokenStream;
 import site.kason.tempera.lexer.TexLexer;
 import site.kason.tempera.lexer.TexToken;
@@ -79,7 +73,7 @@ import site.kason.tempera.util.OffsetUtil;
  *
  * @author Kason Yang
  */
-public class TexTemplateParser {
+public class TemplateParser {
 
   private static int layoutNameCounter = 0;
 
@@ -104,11 +98,11 @@ public class TexTemplateParser {
 
   private final TypeNameResolver typeNameResolver;
 
-  public TexTemplateParser(String templateName, String template, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
+  public TemplateParser(String templateName, String template, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
     this(templateName, new TexTokenStream(new TexLexer(template), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
   }
 
-  public TexTemplateParser(String templateName, TokenStream ts, TemplateAstLoader templateAstLoader, TemplateClassLoader classParser) {
+  public TemplateParser(String templateName, TokenStream ts, TemplateAstLoader templateAstLoader, TemplateClassLoader classParser) {
     this.classParser = classParser;
     this.astLoader = templateAstLoader;
     this.tokenStream = new BufferedTokenStream(ts);
