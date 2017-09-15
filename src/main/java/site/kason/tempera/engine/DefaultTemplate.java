@@ -1,7 +1,7 @@
 package site.kason.tempera.engine;
 
 import java.util.Map;
-import site.kason.tempera.parser.TexTemplateBase;
+import site.kason.tempera.parser.Renderer;
 
 /**
  *
@@ -9,16 +9,16 @@ import site.kason.tempera.parser.TexTemplateBase;
  */
 public class DefaultTemplate implements Template {
 
-  private Class<TexTemplateBase> renderClass;
+  private Class<Renderer> renderClass;
 
-  public DefaultTemplate(Class<TexTemplateBase> renderClass) {
+  public DefaultTemplate(Class<Renderer> renderClass) {
     this.renderClass = renderClass;
   }
 
   @Override
   public String render(Map<String, Object> data) {
     try {
-      TexTemplateBase tpl = renderClass.newInstance();
+      Renderer tpl = renderClass.newInstance();
       return tpl.render(data);
     } catch (InstantiationException | IllegalAccessException ex) {
       throw new RuntimeException(ex);

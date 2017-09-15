@@ -10,7 +10,7 @@ import kalang.ast.ClassNode;
 import kalang.compiler.AstLoader;
 import kalang.compiler.JavaAstLoader;
 import site.kason.tempera.parser.TemplateClassLoader;
-import site.kason.tempera.parser.TexTemplateBase;
+import site.kason.tempera.parser.Renderer;
 import site.kason.tempera.parser.TexTemplateParser;
 
 /**
@@ -54,7 +54,7 @@ public class Engine implements TemplateAstLoader {
       TexTemplateParser parser = new TexTemplateParser(source.getName(),source.getContent(), this, templateClassLoader);
       ClassNode ast = parser.getClassNode();
       this.templateToAsts.put(source, ast);
-      Class<TexTemplateBase> clazz = parser.parse();
+      Class<Renderer> clazz = parser.parse();
       tpl = new DefaultTemplate(clazz);
       if (cacheKey != null) {
         this.templateNameToCache.put(cacheKey, tpl);

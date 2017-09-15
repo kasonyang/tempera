@@ -116,7 +116,7 @@ public class TexTemplateParser {
     cn.name = templateName;
     cn.modifier = Modifier.PUBLIC;
     try {
-      cn.superType = Types.getClassType(TexTemplateBase.class.getName());
+      cn.superType = Types.getClassType(Renderer.class.getName());
     } catch (AstNotFoundException ex) {
       throw Exceptions.unknownException(ex);
     }
@@ -179,7 +179,7 @@ public class TexTemplateParser {
     return type;
   }
 
-  public Class<TexTemplateBase> parse() throws ParseException, IOException, TemplateNotFoundException {
+  public Class<Renderer> parse() throws ParseException, IOException, TemplateNotFoundException {
     //this.classes.clear();
     try {
       consume();
@@ -204,10 +204,10 @@ public class TexTemplateParser {
     for (ClassNode c : this.classes) {
       writer.generate(c);
     }
-    Class<TexTemplateBase> clazz = null;
+    Class<Renderer> clazz = null;
     String mainTplName = this.classes.get(0).name;
     for (String c : om.getClassNames()) {
-      Class<TexTemplateBase> clz = classParser.generateTemplateClass(c, om.getBytes(c));
+      Class<Renderer> clz = classParser.generateTemplateClass(c, om.getBytes(c));
       if (mainTplName.equals(c)) {
         clazz = clz;
       }

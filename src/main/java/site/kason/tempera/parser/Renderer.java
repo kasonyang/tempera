@@ -14,13 +14,13 @@ import site.kason.tempera.util.MathUtil;
  *
  * @author Kason Yang
  */
-public abstract class TexTemplateBase implements Template {
+public abstract class Renderer {
 
   private StringBuilder sb;
 
   public Map<String, Object> data = new HashMap();
 
-  public TexTemplateBase() {
+  public Renderer() {
   }
 
   public void append(Object str) {
@@ -114,13 +114,12 @@ public abstract class TexTemplateBase implements Template {
 
   public abstract void execute();
 
-  @Override
   public String render(Map<String, Object> values) {
     if (values == null) {
       values = Collections.EMPTY_MAP;
     }
     this.data = values;
-    Class<? extends TexTemplateBase> clazz = this.getClass();
+    Class<? extends Renderer> clazz = this.getClass();
     for (Map.Entry<String, Object> d : values.entrySet()) {
       String key = d.getKey();
       String fieldName = "this_" + key;
