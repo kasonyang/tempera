@@ -54,14 +54,10 @@ public class Engine implements TemplateAstLoader {
       TexTemplateParser parser = new TexTemplateParser(source.getName(),source.getContent(), this, templateClassLoader);
       ClassNode ast = parser.getClassNode();
       this.templateToAsts.put(source, ast);
-      try {
-        Class<TexTemplateBase> clazz = parser.parse();
-        tpl = clazz.newInstance();
-        if (cacheKey != null) {
-          this.templateNameToCache.put(cacheKey, tpl);
-        }
-      } catch (InstantiationException | IllegalAccessException ex) {
-        throw new RuntimeException(ex);
+      Class<TexTemplateBase> clazz = parser.parse();
+      tpl = new DefaultTemplate(clazz);
+      if (cacheKey != null) {
+        this.templateNameToCache.put(cacheKey, tpl);
       }
     }
     return tpl;
