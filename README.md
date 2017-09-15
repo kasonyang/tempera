@@ -20,6 +20,7 @@ Tempera is a high-performance and type-safe template engine.
     {{placeholder placeHolderName}} {{/placeholder}}
     {{replace placeHolderName}}  {{/replace}}
     {{expr}}
+    {{* here is comment *}}
 
 # miscellaneous
 

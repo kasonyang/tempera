@@ -13,6 +13,11 @@ public interface CharStream {
     
     public void skip(int count);
     
+    /**
+     * 
+     * @param count
+     * @return return -1 if out the ending of input
+     */
     public int lookAhead(int count);
     
     public int getCurrentLine();

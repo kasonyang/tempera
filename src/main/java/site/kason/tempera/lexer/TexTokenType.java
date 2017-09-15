@@ -7,6 +7,7 @@ package site.kason.tempera.lexer;
 public enum TexTokenType {
 
   EOF(TexTokenType.CHANNEL_SKIP),
+  COMMENT(TexTokenType.CHANNEL_SKIP),
   TEXT,
   SPACE(TexTokenType.CHANNEL_SKIP),
   DOT,

@@ -99,6 +99,9 @@ public class TexLexer {
   private String startTag = "{{";
 
   private String endTag = "}}";
+  
+  private final String COMMENT_START = "*",COMMENT_END = "*";
+  
 
   private final CharStream charStream;
 
@@ -131,15 +134,35 @@ public class TexLexer {
     if (!inTagMode) {
       int tagOffset = input.indexOf(this.startTag, startOffset);
       if (tagOffset == startOffset) {
-        inTagMode = true;
-        tagLexer.skip(this.startTag.length());
-        int stopOffset = charStream.getCurrentOffset() - 1;
-        int stopLine = charStream.getCurrentLine();
-        int stopColumn = charStream.getCurrentColumn() - 1;
-        return new TexToken(START_TAG,
-                new OffsetRange(startOffset, stopOffset, startLine, startColumn, stopLine, stopColumn), input.substring(startOffset, stopOffset));
+        String commentStartStr = this.startTag+COMMENT_START;
+        String commentEndStr = COMMENT_END + this.endTag;
+        if(input.startsWith(commentStartStr,startOffset)){
+          int commentEndStartOffset = input.indexOf(commentEndStr,startOffset+commentStartStr.length());
+          if(commentEndStartOffset>0){
+            int stopOffset = commentEndStartOffset + commentEndStr.length()-1;
+            int commentLen = stopOffset-startOffset+1;
+            charStream.skip(commentLen-1);
+            int stopLine = charStream.getCurrentLine();
+            int stopColumn = charStream.getCurrentColumn();
+            charStream.skip(1);
+            return new TexToken(COMMENT,
+                new OffsetRange(startOffset,stopOffset,startLine,startColumn,stopLine,stopColumn),input.substring(startOffset,stopOffset+1)
+            );
+          }else{//comment end string not found
+            return this.createTextToken(input.length()-startOffset);
+          }
+        }else{
+          inTagMode = true;
+          tagLexer.skip(this.startTag.length());
+          int stopOffset = charStream.getCurrentOffset() - 1;
+          int stopLine = charStream.getCurrentLine();
+          int stopColumn = charStream.getCurrentColumn() - 1;
+          return new TexToken(START_TAG,
+                  new OffsetRange(startOffset, stopOffset, startLine, startColumn, stopLine, stopColumn), input.substring(startOffset, stopOffset));
+        }
       } else if (tagOffset > startOffset) {
         int textLen = tagOffset - startOffset;
+        //TODO should skil using tagLexer?
         charStream.skip(textLen);
         return new TexToken(TEXT,
                 new OffsetRange(startOffset, charStream.getCurrentOffset() - 1, startLine, startColumn, charStream.getCurrentLine(), charStream.getCurrentColumn() - 1), input.substring(startOffset, startOffset + textLen));
@@ -180,6 +203,20 @@ public class TexLexer {
     NFA intNFA = d1.concat(d2.closure());
     NFA floatNFA = d3.concat(d4.closure()).concat(dot).concat(d5.concat(d6.closure()));
     return intNFA.or(floatNFA);
+  }
+  
+  private TexToken createTextToken(int len) {
+    int startOffset = charStream.getCurrentOffset();
+    int startLine = charStream.getCurrentLine();
+    int startColumn = charStream.getCurrentColumn();
+    charStream.skip(len - 1);
+    int stopOffset = charStream.getCurrentOffset();
+    int stopLine = charStream.getCurrentLine();
+    int stopColumn = charStream.getCurrentColumn();
+    charStream.skip(1);
+    return new TexToken(TEXT,
+            new OffsetRange(startOffset, stopOffset, startLine, startColumn, stopLine, charStream.getCurrentColumn() - 1
+            ), input.substring(startOffset, startOffset + len));
   }
 
 }

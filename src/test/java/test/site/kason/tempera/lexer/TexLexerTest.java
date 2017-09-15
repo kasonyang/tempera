@@ -22,10 +22,10 @@ public class TexLexerTest extends TestBase {
     
     @Test
     public void test() throws LexException{
-        String template = "hello,{{name \"name\"}}";
+        String template = "hello,{{name \"name\"}}{{*here is a comment*}}";
         TexLexer lexer = new TexLexer(template);
         List<TexTokenType> tokenTypes = this.getTokenTypes(lexer.nextTokens());
-        assertEquals(Arrays.asList(TEXT,START_TAG,IDENTITY,SPACE,STRING,END_TAG), tokenTypes);
+        assertEquals(Arrays.asList(TEXT,START_TAG,IDENTITY,SPACE,STRING,END_TAG,COMMENT), tokenTypes);
     }
     
 }
