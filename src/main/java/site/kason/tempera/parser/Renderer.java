@@ -1,7 +1,6 @@
 package site.kason.tempera.parser;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -10,7 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import site.kason.tempera.engine.Template;
+import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.IterateContext;
 import site.kason.tempera.util.MathUtil;
 
@@ -24,6 +23,8 @@ public abstract class Renderer {
   public Writer writer;
 
   public Map<String, Object> data = new HashMap();
+  
+  public Map<String,Function> functions = new HashMap();
 
   public Renderer() {
   }
@@ -95,7 +96,8 @@ public abstract class Renderer {
 
   public abstract void execute();
 
-  public void render(Map<String, Object> values, Writer writer) {
+  public void render(Map<String, Object> values, Writer writer,Map<String,Function> functions) {
+    this.functions = functions;
     if (values == null) {
       values = Collections.EMPTY_MAP;
     }
@@ -159,6 +161,14 @@ public abstract class Renderer {
 
   public Object ne(Object o1, Object o2) {
     return MathUtil.ne(o1, o2);
+  }
+  
+  public Object callFunction(String funcName,Object[] arguments){
+    Function fn = this.functions.get(funcName);
+    if(fn==null){
+      throw new RuntimeException("function not found:" + funcName);
+    }
+    return fn.execute(arguments);
   }
 
 }

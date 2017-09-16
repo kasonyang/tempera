@@ -3,12 +3,15 @@ package site.kason.tempera.engine;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import kalang.AstNotFoundException;
 import kalang.ast.ClassNode;
 import kalang.compiler.AstLoader;
 import kalang.compiler.JavaAstLoader;
+import site.kason.tempera.extension.Function;
 import site.kason.tempera.parser.TemplateClassLoader;
 import site.kason.tempera.parser.Renderer;
 import site.kason.tempera.parser.TemplateParser;
@@ -29,6 +32,8 @@ public class Engine implements TemplateAstLoader {
   private final TemplateClassLoader templateClassLoader;
 
   private final AstLoader astLoader;
+  
+  private final Map<String,Function> functions = new HashMap();
 
   public Engine() {
     this(Configuration.DEFAULT);
@@ -52,15 +57,22 @@ public class Engine implements TemplateAstLoader {
     if (tpl == null) {
       //TexParser parser = new TexParser(source.getContent(),this,templateClassLoader);
       TemplateParser parser = new TemplateParser(source.getName(),source.getContent(), this, templateClassLoader);
+      for(Map.Entry<String, Function> e:functions.entrySet()){
+        parser.addFunction(e.getValue());
+      }
       ClassNode ast = parser.getClassNode();
       this.templateToAsts.put(source, ast);
       Class<Renderer> clazz = parser.parse();
-      tpl = new DefaultTemplate(clazz);
+      tpl = new DefaultTemplate(clazz,functions);
       if (cacheKey != null) {
         this.templateNameToCache.put(cacheKey, tpl);
       }
     }
     return tpl;
+  }
+  
+  public void addFunction(Function func){
+    this.functions.put(func.getName(), func);
   }
 
   public Template compile(String templateName) throws IOException {

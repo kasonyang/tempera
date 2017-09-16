@@ -14,6 +14,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import site.kason.tempera.engine.TemplateAstLoader;
 import site.kason.tempera.engine.TemplateNotFoundException;
+import site.kason.tempera.extension.Function;
 import site.kason.tempera.lex.LexException;
 import site.kason.tempera.lexer.TexLexer;
 import site.kason.tempera.lexer.TexTokenStream;
@@ -64,7 +65,7 @@ public class TexTemplateParserTest {
     Class<Renderer> tplClazz = parser.parse();
     Renderer inst = tplClazz.newInstance();
     StringWriter writer = new StringWriter();
-    inst.render(data,writer);
+    inst.render(data,writer,Collections.EMPTY_MAP);
     return writer.toString();
   }
 

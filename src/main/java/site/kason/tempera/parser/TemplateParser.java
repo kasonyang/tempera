@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import kalang.AmbiguousMethodException;
 import kalang.AstNotFoundException;
@@ -33,7 +35,9 @@ import kalang.ast.ObjectFieldExpr;
 import kalang.ast.ObjectInvokeExpr;
 import kalang.ast.ParameterExpr;
 import kalang.ast.ParameterNode;
+import kalang.ast.ReturnStmt;
 import kalang.ast.Statement;
+import kalang.ast.StoreArrayElementExpr;
 import kalang.ast.ThisExpr;
 import kalang.ast.UnaryExpr;
 import kalang.ast.VarDeclStmt;
@@ -57,6 +61,7 @@ import kalang.util.NameUtil;
 import kalang.util.StringLiteralUtil;
 import site.kason.tempera.engine.TemplateAstLoader;
 import site.kason.tempera.engine.TemplateNotFoundException;
+import site.kason.tempera.extension.Function;
 import site.kason.tempera.lex.LexException;
 import site.kason.tempera.lexer.BufferedTokenStream;
 import site.kason.tempera.lexer.TexLexer;
@@ -97,6 +102,8 @@ public class TemplateParser {
   private final TypeParser typePaser = new TypeParser();
 
   private final TypeNameResolver typeNameResolver;
+  
+  private final List<Function> functions = new LinkedList();
 
   public TemplateParser(String templateName, String template, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
     this(templateName, new TexTokenStream(new TexLexer(template), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
@@ -172,9 +179,14 @@ public class TemplateParser {
     }
     return type;
   }
+  
+  public void addFunction(Function fn){
+    this.functions.add(fn);
+  }
 
   public Class<Renderer> parse() throws ParseException, IOException, TemplateNotFoundException {
     //this.classes.clear();
+    this.createFunctions();
     try {
       consume();
       while (isToken(START_TAG) && isTokenLA(1,VAR)) {
@@ -462,7 +474,7 @@ public class TemplateParser {
       return new ExprStmt(
               ObjectInvokeExpr.create(
                       new NewObjectExpr(Types.getClassType(layoutClass), new ExprNode[0]), "render", new ExprNode[]{
-                        ObjectFieldExpr.create(new ThisExpr(classNode), "data", classNode), ObjectFieldExpr.create(new ThisExpr(classNode), "writer", classNode)
+                        ObjectFieldExpr.create(new ThisExpr(classNode), "data", classNode), ObjectFieldExpr.create(new ThisExpr(classNode), "writer", classNode), ObjectFieldExpr.create(new ThisExpr(classNode), "functions", classNode)
                       }
               )
       );
@@ -669,8 +681,23 @@ public class TemplateParser {
       expr = this.expr();
       this.expect(RPAREN);
     } else if (isToken(IDENTITY)) {
-      expr = this.getNamedExpr(token);
-      consume();
+      if(this.isTokenLA(1, LPAREN)){
+        String funcName = token.getText();
+        consume(2);
+        List<ExprNode> argsList = new LinkedList();
+        if(this.isExprPrefix(token.getTokenType())){
+          argsList.add(this.expr());
+        }
+        while(isToken(COMMA)){
+          consume();
+          argsList.add(this.expr());
+        }
+        expect(RPAREN);
+        return this.getCallExpr("fn_"+funcName,argsList.toArray(new ExprNode[argsList.size()]));
+      }else{
+        expr = this.getNamedExpr(token);
+        consume();
+      }
     } else if (isToken(NUMBER)) {
       String text = token.getText();
       if(text.contains(".")){
@@ -790,6 +817,46 @@ public class TemplateParser {
   private void exitMethod() {
     this.methodStack.pop();
     this.varTableStack.pop();
+  }
+  
+  private void createFunctions(){
+    for(Function f:this.functions){
+      String returnTypeName = f.getReturnType().getName();
+      Type returnType = Types.requireClassType(returnTypeName);
+      MethodNode fnMethod = this.classNode.createMethodNode(
+              returnType,
+              "fn_" + f.getName(),
+              Modifier.PUBLIC
+      );
+      Class<?>[] params = f.getParameters();
+      for(int i=0;i<params.length;i++){
+        fnMethod.createParameter(Types.requireClassType(params[i].getName()), "arg"+i);
+      }
+      BlockStmt body = fnMethod.getBody();
+      LocalVarNode var = new LocalVarNode(Types.getArrayType(Types.getRootType()), null);
+      body.statements.add(new VarDeclStmt(var));
+      NewArrayExpr newArrayExpr = new NewArrayExpr(Types.getRootType(), new ConstExpr(params.length));
+      body.statements.add(new ExprStmt(new AssignExpr(new VarExpr(var), newArrayExpr)));
+      ParameterNode[] mdParams = fnMethod.getParameters();
+      for(int i=0;i<mdParams.length;i++){
+        body.statements.add(new ExprStmt(
+          new AssignExpr(new ElementExpr(new VarExpr(var), new ConstExpr(i)), new ParameterExpr(mdParams[i]))));
+      }
+      try{
+      body.statements.add(new ReturnStmt(
+        new CastExpr(
+          returnType
+          ,ObjectInvokeExpr.create(
+            new ThisExpr(classNode)
+            , "callFunction"
+            , new ExprNode[]{new ConstExpr(f.getName()),new VarExpr(var)}
+          )
+        )
+      ));
+      } catch (MethodNotFoundException | AmbiguousMethodException ex) {
+        throw Exceptions.unknownException(ex);
+      }
+    }
   }
 
 }

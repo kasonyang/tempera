@@ -1,6 +1,9 @@
 package site.kason.tempera.engine;
 
+import java.util.LinkedList;
+import java.util.List;
 import javax.annotation.Nullable;
+import site.kason.tempera.extension.Function;
 import site.kason.tempera.loader.ClasspathTemplateLoader;
 
 /**
@@ -19,7 +22,7 @@ public class Configuration {
   private ClassLoader classLoader;
 
   private TemplateLoader templateLoader;
-
+  
   @Nullable
   public String getCacheDir() {
     return cacheDir;
