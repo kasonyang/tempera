@@ -1,11 +1,15 @@
 package site.kason.tempera.parser;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import site.kason.tempera.engine.Template;
 import site.kason.tempera.model.IterateContext;
 import site.kason.tempera.util.MathUtil;
@@ -16,43 +20,20 @@ import site.kason.tempera.util.MathUtil;
  */
 public abstract class Renderer {
 
-  private StringBuilder sb;
+  //TODO fix to protected
+  public Writer writer;
 
   public Map<String, Object> data = new HashMap();
 
   public Renderer() {
   }
 
-  public void append(Object str) {
-    sb.append(str);
+  public Writer append(Object str) throws IOException {
+    return writer.append(Objects.toString(str, ""));
   }
 
-  public StringBuilder append(String str) {
-    return sb.append(str);
-  }
-
-  public StringBuilder append(boolean b) {
-    return sb.append(b);
-  }
-
-  public StringBuilder append(char c) {
-    return sb.append(c);
-  }
-
-  public StringBuilder append(int i) {
-    return sb.append(i);
-  }
-
-  public StringBuilder append(long lng) {
-    return sb.append(lng);
-  }
-
-  public StringBuilder append(float f) {
-    return sb.append(f);
-  }
-
-  public StringBuilder append(double d) {
-    return sb.append(d);
+  public Writer append(String str) throws IOException {
+    return writer.append(str);
   }
 
   public IterateContext createIterateContext(Object obj) {
@@ -114,7 +95,7 @@ public abstract class Renderer {
 
   public abstract void execute();
 
-  public String render(Map<String, Object> values) {
+  public void render(Map<String, Object> values, Writer writer) {
     if (values == null) {
       values = Collections.EMPTY_MAP;
     }
@@ -132,9 +113,8 @@ public abstract class Renderer {
         throw new RuntimeException(ex);
       }
     }
-    this.sb = new StringBuilder();
+    this.writer = writer;
     this.execute();
-    return sb.toString();
   }
 
   public Object add(Object o1, Object o2) {
@@ -156,28 +136,28 @@ public abstract class Renderer {
   public Object mod(Object o1, Object o2) {
     return MathUtil.mod(o1, o2);
   }
-  
-  public Object lt(Object o1,Object o2){
+
+  public Object lt(Object o1, Object o2) {
     return MathUtil.lt(o1, o2);
   }
-  
-  public Object le(Object o1,Object o2){
+
+  public Object le(Object o1, Object o2) {
     return MathUtil.le(o1, o2);
   }
-  
-  public Object gt(Object o1,Object o2){
+
+  public Object gt(Object o1, Object o2) {
     return MathUtil.gt(o1, o2);
   }
-  
-  public Object ge(Object o1,Object o2){
+
+  public Object ge(Object o1, Object o2) {
     return MathUtil.ge(o1, o2);
   }
-  
-  public Object eq(Object o1,Object o2){
+
+  public Object eq(Object o1, Object o2) {
     return MathUtil.eq(o1, o2);
   }
-  
-  public Object ne(Object o1,Object o2){
+
+  public Object ne(Object o1, Object o2) {
     return MathUtil.ne(o1, o2);
   }
 

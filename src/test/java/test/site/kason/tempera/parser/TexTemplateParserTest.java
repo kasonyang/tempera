@@ -1,6 +1,7 @@
 package test.site.kason.tempera.parser;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,7 +63,9 @@ public class TexTemplateParserTest {
     }
     Class<Renderer> tplClazz = parser.parse();
     Renderer inst = tplClazz.newInstance();
-    return inst.render(data);
+    StringWriter writer = new StringWriter();
+    inst.render(data,writer);
+    return writer.toString();
   }
 
   @Test

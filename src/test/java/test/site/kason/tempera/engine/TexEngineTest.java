@@ -1,6 +1,7 @@
 package test.site.kason.tempera.engine;
 
 import java.io.File;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -41,7 +42,9 @@ public class TexEngineTest {
   public void test() throws Exception {
     Engine engine = new Engine();
     Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello.template", null);
-    String result = tpl.render(Collections.singletonMap("name", "world"));
+    StringWriter stringWriter = new StringWriter();
+    tpl.render(Collections.singletonMap("name", "world"),stringWriter);
+    String result = stringWriter.toString();
     assertEquals("hello,world!", result);
   }
   
@@ -51,7 +54,7 @@ public class TexEngineTest {
     List<String> list = Arrays.asList(names);
     Engine engine = new Engine();
     Template tpl = engine.compile("templates.main");
-    tpl.render(Collections.singletonMap("names", list));
+    tpl.render(Collections.singletonMap("names", list),new StringWriter());
   }
 
   @Test

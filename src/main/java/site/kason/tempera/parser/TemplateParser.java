@@ -459,10 +459,10 @@ public class TemplateParser {
     classNode = oldClass;
     expectEnclosdTag(END_LAYOUT);
     try {
-      return this.getCallStmt("append",
+      return new ExprStmt(
               ObjectInvokeExpr.create(
                       new NewObjectExpr(Types.getClassType(layoutClass), new ExprNode[0]), "render", new ExprNode[]{
-                        ObjectFieldExpr.create(new ThisExpr(classNode), "data", classNode)
+                        ObjectFieldExpr.create(new ThisExpr(classNode), "data", classNode), ObjectFieldExpr.create(new ThisExpr(classNode), "writer", classNode)
                       }
               )
       );
