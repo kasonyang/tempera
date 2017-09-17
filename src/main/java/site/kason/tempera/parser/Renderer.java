@@ -36,10 +36,6 @@ public abstract class Renderer {
     return writer.append(Objects.toString(str, ""));
   }
 
-  public Writer append(String str) throws IOException {
-    return writer.append(str);
-  }
-
   public IterateContext createIterateContext(Object obj) {
     return new IterateContext(this.iterator(obj));
   }
