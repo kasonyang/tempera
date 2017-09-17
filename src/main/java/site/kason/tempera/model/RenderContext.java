@@ -1,5 +1,7 @@
 package site.kason.tempera.model;
 
+import java.util.LinkedList;
+import java.util.List;
 import javax.annotation.Nullable;
 import site.kason.tempera.extension.Filter;
 
@@ -9,15 +11,14 @@ import site.kason.tempera.extension.Filter;
  */
 public class RenderContext {
 
-  private Filter defaultFilter;
+  private final List<Filter> defaultFilters = new LinkedList();
 
-  @Nullable
-  public Filter getDefaultFilter() {
-    return defaultFilter;
+  public Filter[] getDefaultFilters() {
+    return defaultFilters.toArray(new Filter[0]);
   }
 
-  public void setDefaultFilter(Filter defaultFilter) {
-    this.defaultFilter = defaultFilter;
+  public void addDefaultFilter(Filter defaultFilter) {
+    this.defaultFilters.add(defaultFilter);
   }
 
 }

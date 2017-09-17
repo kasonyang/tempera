@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.IterateContext;
 import site.kason.tempera.model.RenderContext;
@@ -32,8 +33,13 @@ public abstract class Renderer {
   public Renderer() {
   }
 
-  public Writer append(Object str) throws IOException {
-    return writer.append(Objects.toString(str, ""));
+  public Writer append(Object obj) throws IOException {
+    String val = Objects.toString(obj, "");
+    Filter[] defaultFilters = renderContext.getDefaultFilters();
+    for (Filter f : defaultFilters) {
+      val = f.filter(val);
+    }
+    return writer.append(val);
   }
 
   public IterateContext createIterateContext(Object obj) {

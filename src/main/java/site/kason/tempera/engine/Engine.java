@@ -77,6 +77,10 @@ public class Engine implements TemplateAstLoader {
   public void addFunction(Function func){
     this.functions.put(func.getName(), func);
   }
+  
+  public RenderContext getRenderContext(){
+    return this.renderContext;
+  }
 
   public Template compile(String templateName) throws IOException {
     if (templateLoader == null) {
