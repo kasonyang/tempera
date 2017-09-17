@@ -9,6 +9,7 @@ dependencies {
   compile 'commons-cli:commons-cli:1.3.1'
   compile 'site.kason.kalang:kalang-compiler:1.0.0'
   compile 'site.kason:kamons:1.0.0'
+  compile 'org.apache.commons:commons-lang3:3.6'
   testCompile 'junit:junit:4.12'
 }
 
