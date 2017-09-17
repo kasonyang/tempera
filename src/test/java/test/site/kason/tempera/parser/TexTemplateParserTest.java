@@ -19,6 +19,7 @@ import site.kason.tempera.lex.LexException;
 import site.kason.tempera.lexer.TexLexer;
 import site.kason.tempera.lexer.TexTokenStream;
 import site.kason.tempera.lexer.TokenStream;
+import site.kason.tempera.model.RenderContext;
 import site.kason.tempera.parser.TemplateClassLoader;
 import site.kason.tempera.parser.TemplateParser;
 import site.kason.tempera.parser.Renderer;
@@ -65,7 +66,7 @@ public class TexTemplateParserTest {
     Class<Renderer> tplClazz = parser.parse();
     Renderer inst = tplClazz.newInstance();
     StringWriter writer = new StringWriter();
-    inst.render(data,writer,Collections.EMPTY_MAP);
+    inst.render(data,writer,Collections.EMPTY_MAP,new RenderContext());
     return writer.toString();
   }
 
