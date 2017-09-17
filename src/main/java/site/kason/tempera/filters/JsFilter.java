@@ -7,11 +7,11 @@ import site.kason.tempera.extension.Filter;
  *
  * @author Kason Yang
  */
-public class HtmlFilter implements Filter {
+public class JsFilter implements Filter {
 
   @Override
   public String filter(String value) {
-    return StringEscapeUtils.escapeHtml4(value);
+    return StringEscapeUtils.escapeEcmaScript(value);
   }
 
 }
