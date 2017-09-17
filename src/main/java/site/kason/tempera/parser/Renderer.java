@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.IterateContext;
+import site.kason.tempera.model.RenderContext;
 import site.kason.tempera.util.MathUtil;
 
 /**
@@ -25,6 +26,8 @@ public abstract class Renderer {
   public Map<String, Object> data = new HashMap();
   
   public Map<String,Function> functions = new HashMap();
+  
+  public RenderContext renderContext;
 
   public Renderer() {
   }
@@ -96,8 +99,9 @@ public abstract class Renderer {
 
   public abstract void execute();
 
-  public void render(Map<String, Object> values, Writer writer,Map<String,Function> functions) {
+  public void render(Map<String, Object> values, Writer writer,Map<String,Function> functions,RenderContext renderContext) {
     this.functions = functions;
+    this.renderContext = renderContext;
     if (values == null) {
       values = Collections.EMPTY_MAP;
     }

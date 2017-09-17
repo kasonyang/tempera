@@ -12,6 +12,7 @@ import kalang.ast.ClassNode;
 import kalang.compiler.AstLoader;
 import kalang.compiler.JavaAstLoader;
 import site.kason.tempera.extension.Function;
+import site.kason.tempera.model.RenderContext;
 import site.kason.tempera.parser.TemplateClassLoader;
 import site.kason.tempera.parser.Renderer;
 import site.kason.tempera.parser.TemplateParser;
@@ -34,6 +35,8 @@ public class Engine implements TemplateAstLoader {
   private final AstLoader astLoader;
   
   private final Map<String,Function> functions = new HashMap();
+  
+  private final RenderContext renderContext = new RenderContext();
 
   public Engine() {
     this(Configuration.DEFAULT);
@@ -63,7 +66,7 @@ public class Engine implements TemplateAstLoader {
       ClassNode ast = parser.getClassNode();
       this.templateToAsts.put(source, ast);
       Class<Renderer> clazz = parser.parse();
-      tpl = new DefaultTemplate(clazz,functions);
+      tpl = new DefaultTemplate(clazz,functions,renderContext);
       if (cacheKey != null) {
         this.templateNameToCache.put(cacheKey, tpl);
       }

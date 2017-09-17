@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Nullable;
 import kalang.AmbiguousMethodException;
 import kalang.AstNotFoundException;
@@ -37,7 +35,6 @@ import kalang.ast.ParameterExpr;
 import kalang.ast.ParameterNode;
 import kalang.ast.ReturnStmt;
 import kalang.ast.Statement;
-import kalang.ast.StoreArrayElementExpr;
 import kalang.ast.ThisExpr;
 import kalang.ast.UnaryExpr;
 import kalang.ast.VarDeclStmt;
@@ -472,11 +469,14 @@ public class TemplateParser {
     expectEnclosdTag(END_LAYOUT);
     try {
       return new ExprStmt(
-              ObjectInvokeExpr.create(
-                      new NewObjectExpr(Types.getClassType(layoutClass), new ExprNode[0]), "render", new ExprNode[]{
-                        ObjectFieldExpr.create(new ThisExpr(classNode), "data", classNode), ObjectFieldExpr.create(new ThisExpr(classNode), "writer", classNode), ObjectFieldExpr.create(new ThisExpr(classNode), "functions", classNode)
-                      }
-              )
+        ObjectInvokeExpr.create(
+          new NewObjectExpr(Types.getClassType(layoutClass), new ExprNode[0]), "render", new ExprNode[]{
+            ObjectFieldExpr.create(new ThisExpr(classNode), "data", classNode)
+            , ObjectFieldExpr.create(new ThisExpr(classNode), "writer", classNode)
+            , ObjectFieldExpr.create(new ThisExpr(classNode), "functions", classNode)
+            ,ObjectFieldExpr.create(new ThisExpr(classNode), "renderContext", classNode)
+          }
+        )
       );
     } catch (MethodNotFoundException | AmbiguousMethodException | FieldNotFoundException ex) {
       throw Exceptions.unknownException(ex);
