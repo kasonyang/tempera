@@ -1,5 +1,6 @@
 package site.kason.tempera.filters;
 
+import java.util.Objects;
 import org.apache.commons.text.StringEscapeUtils;
 import site.kason.tempera.extension.Filter;
 
@@ -10,8 +11,8 @@ import site.kason.tempera.extension.Filter;
 public class HtmlFilter implements Filter {
 
   @Override
-  public String filter(String value) {
-    return StringEscapeUtils.escapeHtml4(value);
+  public String filter(Object value) {
+    return StringEscapeUtils.escapeHtml4(Objects.toString(value,""));
   }
 
 }

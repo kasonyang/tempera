@@ -34,12 +34,11 @@ public abstract class Renderer {
   }
 
   public Writer append(Object obj) throws IOException {
-    String val = Objects.toString(obj, "");
     Filter[] defaultFilters = renderContext.getDefaultFilters();
     for (Filter f : defaultFilters) {
-      val = f.filter(val);
+      obj = f.filter(obj);
     }
-    return writer.append(val);
+    return writer.append(Objects.toString(obj,""));
   }
 
   public IterateContext createIterateContext(Object obj) {

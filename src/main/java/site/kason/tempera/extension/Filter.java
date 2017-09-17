@@ -6,6 +6,6 @@ package site.kason.tempera.extension;
  */
 public interface Filter {
 
-  String filter(String value);
+  String filter(Object value);
 
 }
