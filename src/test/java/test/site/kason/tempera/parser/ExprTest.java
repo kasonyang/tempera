@@ -11,6 +11,7 @@ import site.kason.tempera.engine.Template;
 import site.kason.tempera.engine.Engine;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.filters.HtmlFilter;
+import site.kason.tempera.filters.RawFilter;
 import site.kason.tempera.model.RenderContext;
 
 /**
@@ -50,6 +51,7 @@ public class ExprTest {
   @Test
   public void testEscape() throws IOException{
     assertRender("&amp;","{{\"&\"}}",Collections.EMPTY_MAP);
+    assertRender("&", "{{\"&\"|raw}}",Collections.EMPTY_MAP);
   }
 
   private void assertRender(String expected, String tpl, Map<String, Object> data) throws IOException {
@@ -78,6 +80,7 @@ public class ExprTest {
     });   
     RenderContext renderCtx = engine.getRenderContext();
     renderCtx.addDefaultFilter(new HtmlFilter());
+    renderCtx.addFilter("raw", new RawFilter());
     Template template = engine.compileInline(tpl, TexTemplateParserTest.class.getSimpleName(), null);
     String out = template.render(data);
     assertEquals(expected, out);

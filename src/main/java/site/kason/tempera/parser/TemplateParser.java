@@ -544,9 +544,19 @@ public class TemplateParser {
         return replace();
       default:
         if(isExprPrefix(la1.getTokenType())){
+          ExprStmt res;
           expect(START_TAG);
           ExprNode expr = this.expr();
-          ExprStmt res = getCallStmt("append", expr);
+          if(isToken(PIPE)){
+            while(isToken(PIPE)){
+              consume();
+              String filterName = expect(IDENTITY).getText();
+              expr = this.getCallExpr("callFilter", new ConstExpr(filterName),expr);
+            }
+            res = getCallStmt("rawAppend",expr);
+          }else{
+            res = getCallStmt("append", expr);
+          }
           expect(END_TAG);
           return res;
         }else{

@@ -38,6 +38,10 @@ public abstract class Renderer {
     for (Filter f : defaultFilters) {
       obj = f.filter(obj);
     }
+    return this.rawAppend(obj);
+  }
+  
+  public Writer rawAppend(Object obj) throws IOException{
     return writer.append(Objects.toString(obj,""));
   }
 
@@ -174,6 +178,12 @@ public abstract class Renderer {
       throw new RuntimeException("function not found:" + funcName);
     }
     return fn.execute(arguments);
+  }
+  
+  public Object callFilter(String filterName,Object value){
+    Filter filter = this.renderContext.getFilter(filterName);
+    //TODO handle null
+    return filter.filter(value);
   }
 
 }

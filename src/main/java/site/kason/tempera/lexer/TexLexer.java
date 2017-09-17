@@ -78,6 +78,7 @@ public class TexLexer {
       tk(GT, p++, ">"),
       tk(GE, p++, ">="),
       tk(NE, p++, "!="),
+      tk(PIPE,p++,"|"),
       tk(NUMBER, p++,createNumberNFA()),
       tk(IDENTITY, p++, NFAUtil.range('a', 'z').or(NFAUtil.range('A', 'Z'))
       .concat(NFAUtil.range('a', 'z').or(NFAUtil.range('A', 'Z')).closure())),

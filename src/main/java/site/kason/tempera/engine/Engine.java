@@ -11,6 +11,7 @@ import kalang.AstNotFoundException;
 import kalang.ast.ClassNode;
 import kalang.compiler.AstLoader;
 import kalang.compiler.JavaAstLoader;
+import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.RenderContext;
 import site.kason.tempera.parser.TemplateClassLoader;
@@ -52,6 +53,10 @@ public class Engine implements TemplateAstLoader {
     String cachePath = conf.getCacheDir();
     File cacheDir = cachePath==null? null : new File(cachePath);
     this.templateClassLoader = new TemplateClassLoader(classLoader,cacheDir);
+  }
+  
+  public void addFilter(String name,Filter filter){
+    this.renderContext.addFilter(name, filter);
   }
 
   public Template compile(TemplateSource source) throws IOException {

@@ -12,6 +12,7 @@ public enum TexTokenType {
   SPACE(TexTokenType.CHANNEL_SKIP),
   DOT,
   IN,
+  PIPE,
   ELSE,
   START_TAG,
   END_TAG,
