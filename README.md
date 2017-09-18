@@ -4,6 +4,13 @@
 
 Tempera is a high-performance and type-safe template engine.
 
+# Installation
+
+gradle
+
+    compile 'site.kason:tempera:VERSION'
+
+
 # Get started
 
     Engine engine = new Engine();
