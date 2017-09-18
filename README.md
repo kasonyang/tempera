@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/kasonyang/tempera.svg?branch=master)](https://travis-ci.org/kasonyang/tempera)
+[![Maven Central](https://img.shields.io/maven-central/v/site.kason/tempera.svg)]() [![Build Status](https://travis-ci.org/kasonyang/tempera.svg?branch=master)](https://travis-ci.org/kasonyang/tempera)
 
 # What is Tempera?
 
@@ -21,6 +21,7 @@ Tempera is a high-performance and type-safe template engine.
     {{replace placeHolderName}}  {{/replace}}
     {{expr}}
     {{* here is comment *}}
+    {{expr | js }}
 
 # miscellaneous
 
