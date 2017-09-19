@@ -60,8 +60,8 @@ public abstract class Renderer {
     }
   }
 
-  public RuntimeException nonIterableValueException(Object obj) {
-    return new RuntimeException("iterable value required.");
+  public RenderException nonIterableValueException(Object obj) {
+    return new RenderException("iterable value required.");
   }
 
   public boolean toBoolean(int val) {
@@ -118,7 +118,7 @@ public abstract class Renderer {
       } catch (NoSuchFieldException ex) {
         //do nothing
       } catch (SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-        throw new RuntimeException(ex);
+        throw new RenderException(ex);
       }
     }
     this.writer = writer;
@@ -172,14 +172,16 @@ public abstract class Renderer {
   public Object callFunction(String funcName,Object[] arguments){
     Function fn = this.renderContext.getFunction(funcName);
     if(fn==null){
-      throw new RuntimeException("function not found:" + funcName);
+      throw new RenderException("function not found:" + funcName);
     }
     return fn.execute(arguments);
   }
   
   public Object callFilter(String filterName,Object value){
     Filter filter = this.renderContext.getFilter(filterName);
-    //TODO handle null
+    if(filter==null){
+      throw new RenderException("filter not found:" + filterName);
+    }
     return filter.filter(value);
   }
 
