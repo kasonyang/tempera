@@ -56,27 +56,13 @@ public class ExprTest {
 
   private void assertRender(String expected, String tpl, Map<String, Object> data) throws IOException {
     Engine engine = new Engine();
-    engine.addFunction(new Function(){
-      @Override
-      public String getName() {
-        return "length";
-      }
-
-      @Override
-      public Class<?>[] getParameters() {
-        return new Class[]{String.class};
-      }
+    engine.addFunction("length",new Function(){
 
       @Override
       public Object execute(Object[] arguments) {
         return String.valueOf(arguments[0]).length();
       }
-
-      @Override
-      public Class<?> getReturnType() {
-        return Integer.class;
-      }
-    
+      
     });   
     RenderContext renderCtx = engine.getRenderContext();
     renderCtx.addDefaultFilter(new HtmlFilter());

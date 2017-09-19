@@ -66,7 +66,7 @@ public class TexTemplateParserTest {
     Class<Renderer> tplClazz = parser.parse();
     Renderer inst = tplClazz.newInstance();
     StringWriter writer = new StringWriter();
-    inst.render(data,writer,Collections.EMPTY_MAP,new RenderContext());
+    inst.render(data,writer,new RenderContext());
     return writer.toString();
   }
 

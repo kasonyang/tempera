@@ -6,12 +6,6 @@ package site.kason.tempera.extension;
  */
 public interface Function {
 
-  String getName();
-
-  Class<?>[] getParameters();
-
   Object execute(Object[] arguments);
-
-  Class<?> getReturnType();
 
 }

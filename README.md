@@ -29,6 +29,7 @@ gradle
     {{expr}}
     {{* here is comment *}}
     {{expr | js }}
+    {{hello('world')}}
 
 # miscellaneous
 

@@ -99,8 +99,6 @@ public class TemplateParser {
   private final TypeParser typePaser = new TypeParser();
 
   private final TypeNameResolver typeNameResolver;
-  
-  private final List<Function> functions = new LinkedList();
 
   public TemplateParser(String templateName, String template, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
     this(templateName, new TexTokenStream(new TexLexer(template), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
@@ -176,14 +174,10 @@ public class TemplateParser {
     }
     return type;
   }
-  
-  public void addFunction(Function fn){
-    this.functions.add(fn);
-  }
 
   public Class<Renderer> parse() throws ParseException, IOException, TemplateNotFoundException {
     //this.classes.clear();
-    this.createFunctions();
+    //this.createFunctions();
     try {
       consume();
       while (isToken(START_TAG) && isTokenLA(1,VAR)) {
@@ -473,7 +467,7 @@ public class TemplateParser {
           new NewObjectExpr(Types.getClassType(layoutClass), new ExprNode[0]), "render", new ExprNode[]{
             ObjectFieldExpr.create(new ThisExpr(classNode), "data", classNode)
             , ObjectFieldExpr.create(new ThisExpr(classNode), "writer", classNode)
-            , ObjectFieldExpr.create(new ThisExpr(classNode), "functions", classNode)
+            //, ObjectFieldExpr.create(new ThisExpr(classNode), "functions", classNode)
             ,ObjectFieldExpr.create(new ThisExpr(classNode), "renderContext", classNode)
           }
         )
@@ -703,7 +697,15 @@ public class TemplateParser {
           argsList.add(this.expr());
         }
         expect(RPAREN);
-        return this.getCallExpr("fn_"+funcName,argsList.toArray(new ExprNode[argsList.size()]));
+        List<Statement> initStatements = new LinkedList();
+        LocalVarNode argVar = new LocalVarNode(Types.getArrayType(Types.getRootType()), null);
+        initStatements.add(new VarDeclStmt(argVar));
+        initStatements.add(new ExprStmt(new AssignExpr(new VarExpr(argVar),new NewArrayExpr(Types.getRootType(), new ConstExpr(argsList.size())))));
+        for(int i=0;i<argsList.size();i++){
+          initStatements.add(new ExprStmt(new AssignExpr(new ElementExpr(new VarExpr(argVar), new ConstExpr(i)),argsList.get(i))));
+        }
+        return this.getCallExpr("callFunction",new ConstExpr(funcName),new MultiStmtExpr(initStatements, new VarExpr(argVar)));
+        //return this.getCallExpr("fn_"+funcName,argsList.toArray(new ExprNode[argsList.size()]));
       }else{
         expr = this.getNamedExpr(token);
         consume();
@@ -829,44 +831,44 @@ public class TemplateParser {
     this.varTableStack.pop();
   }
   
-  private void createFunctions(){
-    for(Function f:this.functions){
-      String returnTypeName = f.getReturnType().getName();
-      Type returnType = Types.requireClassType(returnTypeName);
-      MethodNode fnMethod = this.classNode.createMethodNode(
-              returnType,
-              "fn_" + f.getName(),
-              Modifier.PUBLIC
-      );
-      Class<?>[] params = f.getParameters();
-      for(int i=0;i<params.length;i++){
-        fnMethod.createParameter(Types.requireClassType(params[i].getName()), "arg"+i);
-      }
-      BlockStmt body = fnMethod.getBody();
-      LocalVarNode var = new LocalVarNode(Types.getArrayType(Types.getRootType()), null);
-      body.statements.add(new VarDeclStmt(var));
-      NewArrayExpr newArrayExpr = new NewArrayExpr(Types.getRootType(), new ConstExpr(params.length));
-      body.statements.add(new ExprStmt(new AssignExpr(new VarExpr(var), newArrayExpr)));
-      ParameterNode[] mdParams = fnMethod.getParameters();
-      for(int i=0;i<mdParams.length;i++){
-        body.statements.add(new ExprStmt(
-          new AssignExpr(new ElementExpr(new VarExpr(var), new ConstExpr(i)), new ParameterExpr(mdParams[i]))));
-      }
-      try{
-      body.statements.add(new ReturnStmt(
-        new CastExpr(
-          returnType
-          ,ObjectInvokeExpr.create(
-            new ThisExpr(classNode)
-            , "callFunction"
-            , new ExprNode[]{new ConstExpr(f.getName()),new VarExpr(var)}
-          )
-        )
-      ));
-      } catch (MethodNotFoundException | AmbiguousMethodException ex) {
-        throw Exceptions.unknownException(ex);
-      }
-    }
-  }
+//  private void createFunctions(){
+//    for(Function f:this.functions){
+//      String returnTypeName = f.getReturnType().getName();
+//      Type returnType = Types.requireClassType(returnTypeName);
+//      MethodNode fnMethod = this.classNode.createMethodNode(
+//              returnType,
+//              "fn_" + f.getName(),
+//              Modifier.PUBLIC
+//      );
+//      Class<?>[] params = f.getParameters();
+//      for(int i=0;i<params.length;i++){
+//        fnMethod.createParameter(Types.requireClassType(params[i].getName()), "arg"+i);
+//      }
+//      BlockStmt body = fnMethod.getBody();
+//      LocalVarNode var = new LocalVarNode(Types.getArrayType(Types.getRootType()), null);
+//      body.statements.add(new VarDeclStmt(var));
+//      NewArrayExpr newArrayExpr = new NewArrayExpr(Types.getRootType(), new ConstExpr(params.length));
+//      body.statements.add(new ExprStmt(new AssignExpr(new VarExpr(var), newArrayExpr)));
+//      ParameterNode[] mdParams = fnMethod.getParameters();
+//      for(int i=0;i<mdParams.length;i++){
+//        body.statements.add(new ExprStmt(
+//          new AssignExpr(new ElementExpr(new VarExpr(var), new ConstExpr(i)), new ParameterExpr(mdParams[i]))));
+//      }
+//      try{
+//      body.statements.add(new ReturnStmt(
+//        new CastExpr(
+//          returnType
+//          ,ObjectInvokeExpr.create(
+//            new ThisExpr(classNode)
+//            , "callFunction"
+//            , new ExprNode[]{new ConstExpr(f.getName()),new VarExpr(var)}
+//          )
+//        )
+//      ));
+//      } catch (MethodNotFoundException | AmbiguousMethodException ex) {
+//        throw Exceptions.unknownException(ex);
+//      }
+//    }
+//  }
 
 }

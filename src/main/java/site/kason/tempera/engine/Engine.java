@@ -35,8 +35,6 @@ public class Engine implements TemplateAstLoader {
 
   private final AstLoader astLoader;
   
-  private final Map<String,Function> functions = new HashMap();
-  
   private final RenderContext renderContext = new RenderContext();
 
   public Engine() {
@@ -65,13 +63,10 @@ public class Engine implements TemplateAstLoader {
     if (tpl == null) {
       //TexParser parser = new TexParser(source.getContent(),this,templateClassLoader);
       TemplateParser parser = new TemplateParser(source.getName(),source.getContent(), this, templateClassLoader);
-      for(Map.Entry<String, Function> e:functions.entrySet()){
-        parser.addFunction(e.getValue());
-      }
       ClassNode ast = parser.getClassNode();
       this.templateToAsts.put(source, ast);
       Class<Renderer> clazz = parser.parse();
-      tpl = new DefaultTemplate(clazz,functions,renderContext);
+      tpl = new DefaultTemplate(clazz,renderContext);
       if (cacheKey != null) {
         this.templateNameToCache.put(cacheKey, tpl);
       }
@@ -79,8 +74,8 @@ public class Engine implements TemplateAstLoader {
     return tpl;
   }
   
-  public void addFunction(Function func){
-    this.functions.put(func.getName(), func);
+  public void addFunction(String name,Function func){
+    this.renderContext.addFunction(name, func);
   }
   
   public RenderContext getRenderContext(){

@@ -14,12 +14,10 @@ import site.kason.tempera.parser.Renderer;
 public class DefaultTemplate implements Template {
 
   private Class<Renderer> renderClass;
-  private final Map<String, Function> functions;
   private final RenderContext renderContext;
 
-  public DefaultTemplate(Class<Renderer> renderClass, Map<String, Function> functions, RenderContext renderContext) {
+  public DefaultTemplate(Class<Renderer> renderClass, RenderContext renderContext) {
     this.renderClass = renderClass;
-    this.functions = functions;
     this.renderContext = renderContext;
   }
 
@@ -27,7 +25,7 @@ public class DefaultTemplate implements Template {
   public void render(Map<String, Object> data, Writer writer) {
     try {
       Renderer tpl = renderClass.newInstance();
-      tpl.render(data, writer, functions, renderContext);
+      tpl.render(data, writer,renderContext);
     } catch (InstantiationException | IllegalAccessException ex) {
       throw new RuntimeException(ex);
     }

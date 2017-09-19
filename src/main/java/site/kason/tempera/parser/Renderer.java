@@ -26,8 +26,6 @@ public abstract class Renderer {
 
   public Map<String, Object> data = new HashMap();
   
-  public Map<String,Function> functions = new HashMap();
-  
   public RenderContext renderContext;
 
   public Renderer() {
@@ -104,8 +102,7 @@ public abstract class Renderer {
 
   public abstract void execute();
 
-  public void render(Map<String, Object> values, Writer writer,Map<String,Function> functions,RenderContext renderContext) {
-    this.functions = functions;
+  public void render(Map<String, Object> values, Writer writer,RenderContext renderContext) {
     this.renderContext = renderContext;
     if (values == null) {
       values = Collections.EMPTY_MAP;
@@ -173,7 +170,7 @@ public abstract class Renderer {
   }
   
   public Object callFunction(String funcName,Object[] arguments){
-    Function fn = this.functions.get(funcName);
+    Function fn = this.renderContext.getFunction(funcName);
     if(fn==null){
       throw new RuntimeException("function not found:" + funcName);
     }

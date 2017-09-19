@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import site.kason.tempera.extension.Filter;
+import site.kason.tempera.extension.Function;
 
 /**
  *
@@ -16,6 +17,8 @@ public class RenderContext {
   private final List<Filter> defaultFilters = new LinkedList();
   
   private final Map<String,Filter> filters = new HashMap();
+  
+  private final Map<String,Function> functions = new HashMap();
   
 
   public Filter[] getDefaultFilters() {
@@ -30,8 +33,18 @@ public class RenderContext {
     this.filters.put(name, filter);
   }
   
+  @Nullable
   public Filter getFilter(String name){
     return filters.get(name);
+  }
+  
+  public void addFunction(String name,Function function){
+    this.functions.put(name, function);
+  }
+  
+  @Nullable
+  public Function getFunction(String name){
+    return this.functions.get(name);
   }
 
 }
