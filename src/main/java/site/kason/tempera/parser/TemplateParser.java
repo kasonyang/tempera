@@ -726,7 +726,7 @@ public class TemplateParser {
       consume();
     } else if (isToken(LOGIC_NOT)) {
       consume();
-      ExprNode val = this.atom();
+      ExprNode val = this.getCallExpr("toBoolean",this.atom());
       expr = new UnaryExpr(val, "!");
     } else if (isToken(LBRACK)) {//[
       consume();
