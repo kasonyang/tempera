@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.IterateContext;
@@ -209,15 +207,13 @@ public abstract class Renderer {
         } catch (NoSuchMethodException|IllegalAccessException ex1) {
           
         } catch(InvocationTargetException ex2){
-          //TODO handle exception
-          throw new RuntimeException(ex2);
+          throw new RenderException(ex2);
         }
       }
     }catch(SecurityException|IllegalArgumentException ex){
-      throw new RuntimeException(ex);
+      throw new RenderException(ex);
     }
-    //TODO handle property not found
-    throw new RuntimeException("property not found:" + property);
+    throw new RenderException("property not found:" + property);
   }
 
 }
