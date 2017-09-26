@@ -753,11 +753,12 @@ public class TemplateParser {
     } else {
       throw Exceptions.unexpectedToken(this.token);
     }
-    while (isToken(DOT)) {
+    while (isToken(DOT) || isToken(ARROW)) {
+      boolean isDot = isToken(DOT);
       consume();
       TexToken propertyToken = this.expect(IDENTITY);
       String property = propertyToken.getText();
-      expr = this.detectPropertyExpr(expr, property);
+      expr = isDot ? this.detectPropertyExpr(expr, property) : this.getCallExpr("readProperty", expr , new ConstExpr(property));
       if (expr == null) {
         throw Exceptions.propertyNotFound(propertyToken);
       }

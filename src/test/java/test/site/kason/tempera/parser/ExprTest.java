@@ -50,6 +50,11 @@ public class ExprTest {
   }
   
   @Test
+  public void testArrow() throws IOException{
+    assertRender("4", "{{\"test\"->length}}", Collections.EMPTY_MAP);
+  }
+  
+  @Test
   public void testEscape() throws IOException{
     assertRender("&amp;","{{\"&\"}}",Collections.EMPTY_MAP);
     assertRender("&", "{{\"&\"|raw}}",Collections.EMPTY_MAP);

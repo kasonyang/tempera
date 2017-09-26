@@ -3,12 +3,16 @@ package site.kason.tempera.parser;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.IterateContext;
@@ -183,6 +187,37 @@ public abstract class Renderer {
       throw new RenderException("filter not found:" + filterName);
     }
     return filter.filter(value);
+  }
+  
+  public Object readProperty(Object obj,String property){
+    Class<? extends Object> clazz = obj.getClass();
+    try {
+      Field field = clazz.getField(property);
+      return field.get(obj);
+    } catch (NoSuchFieldException|IllegalAccessException ex) {
+      String firstUp = property.substring(0,1).toUpperCase() + property.substring(1);
+      String[] methodName = new String[]{
+        property,
+        "get" + firstUp,
+        "is" + firstUp,
+        "has" + firstUp
+      };
+      for(String mn:methodName){
+        try {
+          Method m = clazz.getMethod(mn);
+          return m.invoke(obj);
+        } catch (NoSuchMethodException|IllegalAccessException ex1) {
+          
+        } catch(InvocationTargetException ex2){
+          //TODO handle exception
+          throw new RuntimeException(ex2);
+        }
+      }
+    }catch(SecurityException|IllegalArgumentException ex){
+      throw new RuntimeException(ex);
+    }
+    //TODO handle property not found
+    throw new RuntimeException("property not found:" + property);
   }
 
 }
