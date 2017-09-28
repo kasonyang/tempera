@@ -23,17 +23,16 @@ import site.kason.tempera.util.MathUtil;
  */
 public abstract class Renderer {
 
-  //TODO fix to protected
-  public Writer writer;
+  protected Writer writer;
 
-  public Map<String, Object> data = new HashMap();
+  protected Map<String, Object> data = new HashMap();
   
-  public RenderContext renderContext;
+  protected RenderContext renderContext;
 
   public Renderer() {
   }
 
-  public Writer append(Object obj) throws IOException {
+  protected Writer append(Object obj) throws IOException {
     Filter[] defaultFilters = renderContext.getDefaultFilters();
     for (Filter f : defaultFilters) {
       obj = f.filter(obj);
@@ -41,15 +40,15 @@ public abstract class Renderer {
     return this.rawAppend(obj);
   }
   
-  public Writer rawAppend(Object obj) throws IOException{
+  protected Writer rawAppend(Object obj) throws IOException{
     return writer.append(Objects.toString(obj,""));
   }
 
-  public IterateContext createIterateContext(Object obj) {
+  protected IterateContext createIterateContext(Object obj) {
     return new IterateContext(this.iterator(obj));
   }
 
-  public Iterator iterator(Object list) {
+  protected Iterator iterator(Object list) {
     if (list == null) {
       return Collections.EMPTY_LIST.iterator();
     }
@@ -62,35 +61,35 @@ public abstract class Renderer {
     }
   }
 
-  public RenderException nonIterableValueException(Object obj) {
+  protected RenderException nonIterableValueException(Object obj) {
     return new RenderException("iterable value required.");
   }
 
-  public boolean toBoolean(int val) {
+  protected boolean toBoolean(int val) {
     return val != 0;
   }
 
-  public boolean toBoolean(long val) {
+  protected boolean toBoolean(long val) {
     return val != 0;
   }
 
-  public boolean toBoolean(float val) {
+  protected boolean toBoolean(float val) {
     return val != 0;
   }
 
-  public boolean toBoolean(double val) {
+  protected boolean toBoolean(double val) {
     return val != 0;
   }
 
-  public boolean toBoolean(char c) {
+  protected boolean toBoolean(char c) {
     return c != 0;
   }
 
-  public boolean toBoolean(String val) {
+  protected boolean toBoolean(String val) {
     return val != null && !val.isEmpty();
   }
 
-  public boolean toBoolean(Object obj) {
+  protected boolean toBoolean(Object obj) {
     if (obj == null) {
       return false;
     }
@@ -102,7 +101,7 @@ public abstract class Renderer {
     return true;
   }
 
-  public abstract void execute();
+  protected abstract void execute();
 
   public void render(Map<String, Object> values, Writer writer,RenderContext renderContext) {
     this.renderContext = renderContext;
@@ -127,51 +126,51 @@ public abstract class Renderer {
     this.execute();
   }
 
-  public Object add(Object o1, Object o2) {
+  protected Object add(Object o1, Object o2) {
     return MathUtil.add(o1, o2);
   }
 
-  public Object sub(Object o1, Object o2) {
+  protected Object sub(Object o1, Object o2) {
     return MathUtil.sub(o1, o2);
   }
 
-  public Object mul(Object o1, Object o2) {
+  protected Object mul(Object o1, Object o2) {
     return MathUtil.mul(o1, o2);
   }
 
-  public Object div(Object o1, Object o2) {
+  protected Object div(Object o1, Object o2) {
     return MathUtil.div(o1, o2);
   }
 
-  public Object mod(Object o1, Object o2) {
+  protected Object mod(Object o1, Object o2) {
     return MathUtil.mod(o1, o2);
   }
 
-  public Object lt(Object o1, Object o2) {
+  protected Object lt(Object o1, Object o2) {
     return MathUtil.lt(o1, o2);
   }
 
-  public Object le(Object o1, Object o2) {
+  protected Object le(Object o1, Object o2) {
     return MathUtil.le(o1, o2);
   }
 
-  public Object gt(Object o1, Object o2) {
+  protected Object gt(Object o1, Object o2) {
     return MathUtil.gt(o1, o2);
   }
 
-  public Object ge(Object o1, Object o2) {
+  protected Object ge(Object o1, Object o2) {
     return MathUtil.ge(o1, o2);
   }
 
-  public Object eq(Object o1, Object o2) {
+  protected Object eq(Object o1, Object o2) {
     return MathUtil.eq(o1, o2);
   }
 
-  public Object ne(Object o1, Object o2) {
+  protected Object ne(Object o1, Object o2) {
     return MathUtil.ne(o1, o2);
   }
   
-  public Object callFunction(String funcName,Object[] arguments){
+  protected Object callFunction(String funcName,Object[] arguments){
     Function fn = this.renderContext.getFunction(funcName);
     if(fn==null){
       throw new RenderException("function not found:" + funcName);
@@ -179,7 +178,7 @@ public abstract class Renderer {
     return fn.execute(arguments);
   }
   
-  public Object callFilter(String filterName,Object value){
+  protected Object callFilter(String filterName,Object value){
     Filter filter = this.renderContext.getFilter(filterName);
     if(filter==null){
       throw new RenderException("filter not found:" + filterName);
@@ -187,7 +186,7 @@ public abstract class Renderer {
     return filter.filter(value);
   }
   
-  public Object readProperty(Object obj,String property){
+  protected Object readProperty(Object obj,String property){
     Class<? extends Object> clazz = obj.getClass();
     try {
       Field field = clazz.getField(property);
