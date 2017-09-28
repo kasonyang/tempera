@@ -570,7 +570,33 @@ public class TemplateParser {
   }
 
   private ExprNode expr() throws LexException {
-    return this.expr_logic_and_or();
+    ExprNode expr = this.expr_logic_and_or();
+    if(isToken(CONDITIONAL)){
+      consume();
+      List<Statement> statements = new LinkedList();
+      LocalVarNode conditionalVar = new LocalVarNode(Types.getRootType(), null);
+      //TODO fix type
+      LocalVarNode valueVar = new LocalVarNode(Types.getRootType(),null);
+      statements.add(new VarDeclStmt(Arrays.asList(conditionalVar,valueVar)));
+      statements.add(new ExprStmt(new AssignExpr(new VarExpr(conditionalVar),expr)));
+      BlockStmt trueStmt = new BlockStmt();
+      BlockStmt falseStmt = new BlockStmt();
+      ExprNode trueExpr;
+      if(isExprPrefix(token.getTokenType())){
+        trueExpr = this.expr();
+      }else{
+        trueExpr = new VarExpr(conditionalVar);
+      }
+      expect(COLON);
+      ExprNode falseExpr = this.expr();
+      trueStmt.statements.add(new ExprStmt(new AssignExpr(new VarExpr(valueVar),trueExpr)));
+      falseStmt.statements.add(new ExprStmt(new AssignExpr(new VarExpr(valueVar),falseExpr)));
+      IfStmt ifStmt = new IfStmt(this.getCallExpr("toBoolean", new VarExpr(conditionalVar)), trueStmt, falseStmt);
+      statements.add(ifStmt);
+      return new MultiStmtExpr(statements,new VarExpr(valueVar));
+    }else{
+      return expr;
+    }
   }
 
   public void setVarType(String key, Type type) {

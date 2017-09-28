@@ -11,6 +11,7 @@ public enum TexTokenType {
   TEXT,
   SPACE(TexTokenType.CHANNEL_SKIP),
   DOT,
+  CONDITIONAL,
   ARROW,
   IN,
   PIPE,
