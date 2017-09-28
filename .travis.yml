@@ -1,7 +1,6 @@
 language: java
 script:
-  - chmod +x ./gradlew
-  - ./gradlew check
-  - ./gradlew codeCoverageReport
+  - gradle check
+  - gradle codeCoverageReport
 after_success:
   - bash <(curl -s https://codecov.io/bash)
