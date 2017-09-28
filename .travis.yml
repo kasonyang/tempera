@@ -1,6 +1,6 @@
 language: java
 script:
-  - chmod +x gradlew
+  - chmod +x ./gradlew
   - ./gradlew check
   - ./gradlew codeCoverageReport
 after_success:
