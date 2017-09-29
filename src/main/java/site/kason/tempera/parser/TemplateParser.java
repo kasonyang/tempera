@@ -618,11 +618,11 @@ public class TemplateParser {
     if (isToken(LOGIC_AND)) {
       consume();
       ExprNode expr2 = this.expr_equals();
-      return new LogicExpr(expr1, expr2, LogicExpr.OP_LOGIC_AND);
+      return this.getCallExpr("and", expr1,expr2);
     } else if (isToken(LOGIC_OR)) {
       consume();
       ExprNode expr2 = this.expr_equals();
-      return new LogicExpr(expr1, expr2, LogicExpr.OP_LOGIC_OR);
+      return this.getCallExpr("or", expr1,expr2);
     }
     return expr1;
   }

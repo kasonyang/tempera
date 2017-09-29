@@ -47,6 +47,10 @@ public class ExprTest {
     assertRender("1",header+"{{!age ? 0 : 1}}",data);
     assertRender("2",header+"{{age ?: 1}}",data);
     assertRender("1",header+"{{!age ?: 1}}",data);
+    assertRender("true",header+"{{age && age}}",data);
+    assertRender("true",header+"{{age || age}}",data);
+    assertRender("2",header+"{{(age)}}",data);
+    assertRender("123",header+"{{for c in [1,2,3]}}{{c}}{{/for}}",data);
   }
   
   @Test

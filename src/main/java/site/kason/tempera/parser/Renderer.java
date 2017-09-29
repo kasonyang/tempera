@@ -170,6 +170,14 @@ public abstract class Renderer {
     return MathUtil.ne(o1, o2);
   }
   
+  protected Object and(Object o1,Object o2){
+    return toBoolean(o1) && toBoolean(o2);
+  }
+  
+  protected Object or(Object o1,Object o2){
+    return toBoolean(o1) || toBoolean(o2);
+  }
+  
   protected Object callFunction(String funcName,Object[] arguments){
     Function fn = this.renderContext.getFunction(funcName);
     if(fn==null){
