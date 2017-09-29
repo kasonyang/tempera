@@ -41,12 +41,26 @@ public class ExprTest {
     assertRender("true", header+"{{age<=2}}", data);
     assertRender("false", header+"{{age<2}}", data);
     assertRender("false",header+"{{!age}}",data);
+    assertRender("-2",header+"{{-age}}",data);
     assertRender("6.6",header+"{{6.6}}",data);
+    assertRender("0",header+"{{age ? 0 : 1}}",data);
+    assertRender("1",header+"{{!age ? 0 : 1}}",data);
+    assertRender("2",header+"{{age ?: 1}}",data);
+    assertRender("1",header+"{{!age ?: 1}}",data);
+    assertRender("true",header+"{{age && age}}",data);
+    assertRender("true",header+"{{age || age}}",data);
+    assertRender("2",header+"{{(age)}}",data);
+    assertRender("123",header+"{{for c in [1,2,3]}}{{c}}{{/for}}",data);
   }
   
   @Test
   public void testFunction() throws IOException{
     assertRender("4", "{{length(\"test\")}}", Collections.EMPTY_MAP);
+  }
+  
+  @Test
+  public void testArrow() throws IOException{
+    assertRender("4", "{{\"test\"->length}}", Collections.EMPTY_MAP);
   }
   
   @Test

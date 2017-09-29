@@ -37,6 +37,8 @@ public class TexLexer {
     return new TexTokenInfo[]{
       tk(SPACE, p++, " "),
       tk(DOT, p++, "."),
+      tk(ARROW,p++,"->"),
+      tk(CONDITIONAL,p++,"?"),
       tk(IN, p++, "in"),
       tk(START_TAG, p++, startTag),
       tk(END_TAG, p++, endTag),
