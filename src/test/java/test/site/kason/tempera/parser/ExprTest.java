@@ -41,6 +41,7 @@ public class ExprTest {
     assertRender("true", header+"{{age<=2}}", data);
     assertRender("false", header+"{{age<2}}", data);
     assertRender("false",header+"{{!age}}",data);
+    assertRender("-2",header+"{{-age}}",data);
     assertRender("6.6",header+"{{6.6}}",data);
     assertRender("0",header+"{{age ? 0 : 1}}",data);
     assertRender("1",header+"{{!age ? 0 : 1}}",data);

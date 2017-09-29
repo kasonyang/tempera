@@ -55,11 +55,13 @@ import kalang.tool.MemoryOutputManager;
 import kalang.util.AstUtil;
 import kalang.util.BoxUtil;
 import kalang.util.NameUtil;
+import kalang.util.OffsetRangeHelper;
 import kalang.util.StringLiteralUtil;
 import site.kason.tempera.engine.TemplateAstLoader;
 import site.kason.tempera.engine.TemplateNotFoundException;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.lex.LexException;
+import site.kason.tempera.lex.OffsetRange;
 import site.kason.tempera.lexer.BufferedTokenStream;
 import site.kason.tempera.lexer.TexLexer;
 import site.kason.tempera.lexer.TexToken;
@@ -561,7 +563,7 @@ public class TemplateParser {
   
   private boolean isExprPrefix(TexTokenType type){
     TexTokenType[] prefixArray = new TexTokenType[]{
-      LPAREN,IDENTITY,NUMBER,STRING,LOGIC_NOT,LBRACK,LBRACE
+      LPAREN,IDENTITY,NUMBER,STRING,LOGIC_NOT,LBRACK,LBRACE,SUB
     };
     for(TexTokenType t:prefixArray){
       if(t.equals(type)) return true;
@@ -754,6 +756,21 @@ public class TemplateParser {
       consume();
       ExprNode val = this.getCallExpr("toBoolean",this.atom());
       expr = new UnaryExpr(val, "!");
+    } else if (isToken(SUB)){
+      consume();
+      ExprNode val = this.expr();
+      Type valType = val.getType();
+      if( Types.isNumberPrimitive(valType)){
+        expr = new UnaryExpr(val, UnaryExpr.OPERATION_NEG);
+      }else if(Types.isNumberClass(valType)){
+        PrimitiveType primitiveType = Types.getPrimitiveType((ClassType)valType);
+        if(primitiveType==null){
+          throw Exceptions.unknownException("primitive type not found");
+        }
+        expr = new UnaryExpr(BoxUtil.assign(val, valType, primitiveType),UnaryExpr.OPERATION_NEG);
+      }else{
+        throw new SemanticException(OffsetUtil.getOffsetOfExprNode(val), "number type required.");
+      }
     } else if (isToken(LBRACK)) {//[
       consume();
       List<Statement> statements = new LinkedList();
