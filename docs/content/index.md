@@ -5,6 +5,14 @@ tags=
 status=published
 ~~~~~~
 
+# Overview
+
+Tempera is a high-performance and type-safe template engine. 
+
+# Performance
+
+![performance](https://github.com/kasonyang/template-benchmark/raw/master/results.png)
+
 # Installation
 
 gradle
