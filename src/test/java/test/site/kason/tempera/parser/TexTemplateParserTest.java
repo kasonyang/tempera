@@ -47,7 +47,7 @@ public class TexTemplateParserTest {
 
   private String render(String tpl, Map<String, Object> data, Map<String, String> types)
           throws Exception {
-    TexLexer lexer = new TexLexer(tpl);
+    TexLexer lexer = new TexLexer(tpl,"{{","}}");
     TokenStream ts = new TexTokenStream(lexer);
     TemplateParser parser = new TemplateParser("Test", ts, new TemplateAstLoader() {
       @Override

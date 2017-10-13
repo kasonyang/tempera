@@ -55,7 +55,7 @@ public class Main {
     String outPath = cl.getOptionValue("o", ".");
     String srcPath = cl.getOptionValue("s",".");
     String classPath = cl.getOptionValue("cp", ".");
-    Configuration conf = new Configuration();
+    Configuration conf = new Configuration(Configuration.DEFAULT);
     conf.setCacheDir(outPath);
     FileTemplateLoader tloader = new FileTemplateLoader(srcPath,new String[]{".tplx"},"utf-8");
     conf.setTemplateLoader(tloader);

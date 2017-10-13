@@ -18,7 +18,7 @@ public class TokenStreamTest {
     
     @Test
     public void test() throws LexException{
-        TexLexer lexer = new TexLexer("hello,{{name}}!");
+        TexLexer lexer = new TexLexer("hello,{{name}}!","{{","}}");
         TokenStream ts  = new TexTokenStream(lexer);
         assertEquals(TEXT, ts.nextToken().getTokenType());
         assertEquals(START_TAG, ts.nextToken().getTokenType());

@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.Map;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.RenderContext;
+import site.kason.tempera.parser.Exceptions;
 import site.kason.tempera.parser.Renderer;
 
 /**
@@ -27,7 +28,7 @@ public class DefaultTemplate implements Template {
       Renderer tpl = renderClass.newInstance();
       tpl.render(data, writer,renderContext);
     } catch (InstantiationException | IllegalAccessException ex) {
-      throw new RuntimeException(ex);
+      throw Exceptions.unknownException(ex);
     }
   }
 

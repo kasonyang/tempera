@@ -99,16 +99,18 @@ public class TexLexer {
 
   private boolean inTagMode = false;
 
-  private String startTag = "{{";
+  private final String startTag;
 
-  private String endTag = "}}";
+  private final String endTag;
   
   private final String COMMENT_START = "*",COMMENT_END = "*";
   
 
   private final CharStream charStream;
 
-  public TexLexer(String input) {
+  public TexLexer(String input,String leftDelimiter,String rightDelimiter) {
+    this.startTag = leftDelimiter;
+    this.endTag = rightDelimiter;
     charStream = new StringCharStream(input);
     this.tagLexer = new Lexer<>(charStream, getTokenInfos(this.startTag, this.endTag), new TokenFactory<TexToken, TexTokenInfo>() {
       @Override

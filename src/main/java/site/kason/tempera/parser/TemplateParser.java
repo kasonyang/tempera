@@ -102,8 +102,8 @@ public class TemplateParser {
 
   private final TypeNameResolver typeNameResolver;
 
-  public TemplateParser(String templateName, String template, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
-    this(templateName, new TexTokenStream(new TexLexer(template), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
+  public TemplateParser(String templateName, String template,String leftDelimiter,String rightDelimiter, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
+    this(templateName, new TexTokenStream(new TexLexer(template,leftDelimiter,rightDelimiter), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
   }
 
   public TemplateParser(String templateName, TokenStream ts, TemplateAstLoader templateAstLoader, TemplateClassLoader classParser) {

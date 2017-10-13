@@ -70,18 +70,16 @@ public class ExprTest {
   }
 
   private void assertRender(String expected, String tpl, Map<String, Object> data) throws IOException {
-    Engine engine = new Engine();
-    engine.addFunction("length",new Function(){
+    Configuration conf = new Configuration(Configuration.DEFAULT_HTML);
+    conf.registerFunction("length",new Function(){
 
       @Override
       public Object execute(Object[] arguments) {
         return String.valueOf(arguments[0]).length();
       }
       
-    });   
-    RenderContext renderCtx = engine.getRenderContext();
-    renderCtx.addDefaultFilter(new HtmlFilter());
-    renderCtx.addFilter("raw", new RawFilter());
+    });
+    Engine engine = new Engine(conf);
     Template template = engine.compileInline(tpl, TexTemplateParserTest.class.getSimpleName(), null);
     String out = template.render(data);
     assertEquals(expected, out);

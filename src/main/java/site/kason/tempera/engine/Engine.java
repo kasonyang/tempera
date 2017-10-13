@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import kalang.AstNotFoundException;
 import kalang.ast.ClassNode;
@@ -36,6 +37,8 @@ public class Engine implements TemplateAstLoader {
   private final AstLoader astLoader;
   
   private final RenderContext renderContext = new RenderContext();
+  
+  private final String leftDelimiter,rightDelimiter;
 
   public Engine() {
     this(Configuration.DEFAULT);
@@ -51,10 +54,21 @@ public class Engine implements TemplateAstLoader {
     String cachePath = conf.getCacheDir();
     File cacheDir = cachePath==null? null : new File(cachePath);
     this.templateClassLoader = new TemplateClassLoader(classLoader,cacheDir);
-  }
-  
-  public void addFilter(String name,Filter filter){
-    this.renderContext.addFilter(name, filter);
+    Map<String, Filter> filters = conf.getFilters();
+    for(Map.Entry<String, Filter> e:filters.entrySet()){
+      renderContext.addFilter(e.getKey(), e.getValue());
+    }
+    for(Map.Entry<String, Function> e:conf.getFunctions().entrySet()){
+      renderContext.addFunction(e.getKey(), e.getValue());
+    }
+    String defaultFilterName = conf.getDefaultFilter();
+    if(defaultFilterName!=null && !defaultFilterName.isEmpty()){
+      Filter defaultFilter = filters.get(defaultFilterName);
+      Objects.requireNonNull(defaultFilter,"filter not found:"+defaultFilterName);
+      renderContext.addDefaultFilter(defaultFilter);
+    }
+    this.leftDelimiter = conf.getLeftDelimiter();
+    this.rightDelimiter = conf.getRightDelimiter();
   }
 
   public Template compile(TemplateSource source) throws IOException {
@@ -62,7 +76,7 @@ public class Engine implements TemplateAstLoader {
     Template tpl = cacheKey == null ? null : this.templateNameToCache.get(cacheKey);
     if (tpl == null) {
       //TexParser parser = new TexParser(source.getContent(),this,templateClassLoader);
-      TemplateParser parser = new TemplateParser(source.getName(),source.getContent(), this, templateClassLoader);
+      TemplateParser parser = new TemplateParser(source.getName(),source.getContent(),leftDelimiter,rightDelimiter, this, templateClassLoader);
       ClassNode ast = parser.getClassNode();
       this.templateToAsts.put(source, ast);
       Class<Renderer> clazz = parser.parse();
@@ -72,14 +86,6 @@ public class Engine implements TemplateAstLoader {
       }
     }
     return tpl;
-  }
-  
-  public void addFunction(String name,Function func){
-    this.renderContext.addFunction(name, func);
-  }
-  
-  public RenderContext getRenderContext(){
-    return this.renderContext;
   }
 
   public Template compile(String templateName) throws IOException {
