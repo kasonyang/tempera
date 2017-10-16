@@ -7,13 +7,17 @@ status=published
 
 # Overview
 
-Tempera is a high-performance and type-safe template engine. 
+Tempera is a high-performance and type-safe template engine for java. 
 
 # Performance
+
+The performance test could be found here:[https://github.com/kasonyang/template-benchmark](https://github.com/kasonyang/template-benchmark)
 
 ![performance](https://github.com/kasonyang/template-benchmark/raw/master/results.png)
 
 # Installation
+
+![Maven Central](https://img.shields.io/maven-central/v/site.kason/tempera.svg)
 
 gradle
 
@@ -22,10 +26,25 @@ gradle
 
 # Get started
 
+compile template from string:
+
     Engine engine = new Engine();
     Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello.template", null);
     String result = tpl.render(Collections.singletonMap("name", "world"));
     assertEquals("hello,world!", result);
+
+compile template from resource:
+
+    Engine engine = new Engine();
+    Template tpl = engine.compile("templates.main");//compile template from resource:/templates/main.tplx
+    tpl.render(Collections.singletonMap("names", list),new StringWriter());
+
+compile template from file system:
+
+    Configuration conf = new Configuration(Configuration.DEFAULT);
+    conf.setTemplateLoader(new FileTemplateLoader("."));
+    Template tpl = engine.compile("templates.main");//compile template from file: ./templates/main.tplx
+    tpl.render(Collections.singletonMap("names", list),new StringWriter());
 
 # Declaring variables
 
@@ -111,11 +130,30 @@ The output of `child` will be(refomatted):
 
 # Filters
 
+Using filters in template:
+
     {{name|upper}}
+
+Specify the default filter:
+
+    Configuration conf = new Configuration(Configuration.DEFAULT);
+    conf.setDefaultFilter("html");
+
+Register custom filters:
+
+    Configuration conf = new Configuration(Configuration.DEFAULT);
+    conf.registerFilter("html", new HtmlFilter());
 
 # Functions
 
+Using functions in template:
+
     {{length(name)}}
+
+Register custom functions:
+
+    Configuration conf = new Configuration(Configuration.DEFAULT);
+    conf.registerFunction("XXX", new XXXFunction());
 
 # Miscellaneous
 
