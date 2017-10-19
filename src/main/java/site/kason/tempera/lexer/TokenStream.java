@@ -1,6 +1,6 @@
 package site.kason.tempera.lexer;
 
-import site.kason.tempera.lex.LexException;
+import site.kason.klex.LexException;
 
 /**
  *

@@ -2,7 +2,7 @@ package site.kason.tempera.lexer;
 
 import java.util.ArrayList;
 import java.util.List;
-import site.kason.tempera.lex.LexException;
+import site.kason.klex.LexException;
 
 /**
  *

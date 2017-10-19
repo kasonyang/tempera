@@ -3,7 +3,7 @@ package site.kason.tempera.engine;
 import java.io.IOException;
 import kalang.AstNotFoundException;
 import kalang.ast.ClassNode;
-import site.kason.tempera.lex.LexException;
+import site.kason.klex.LexException;
 
 /**
  *

@@ -10,6 +10,7 @@ dependencies {
   compile 'site.kason.kalang:kalang-compiler:1.0.2'
   compile 'site.kason:kamons:1.0.0'
   compile 'org.apache.commons:commons-text:1.1'
+  compile 'site.kason:klex:0.1.0'
   testCompile 'junit:junit:4.12'
 }
 

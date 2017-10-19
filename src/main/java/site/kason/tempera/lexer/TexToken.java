@@ -1,13 +1,12 @@
 package site.kason.tempera.lexer;
 
-import site.kason.tempera.lex.OffsetRange;
-import site.kason.tempera.lex.Token;
+import site.kason.klex.OffsetRange;
 
 /**
  *
  * @author Kason Yang
  */
-public class TexToken implements Token<TexTokenType> {
+public class TexToken{
 
     private final TexTokenType tokenType;
     private OffsetRange offset;
@@ -21,7 +20,6 @@ public class TexToken implements Token<TexTokenType> {
         this.text = text;
     }
 
-    @Override
     public TexTokenType getTokenType() {
         return this.tokenType;
     }

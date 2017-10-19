@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 import site.kason.tempera.engine.TemplateAstLoader;
 import site.kason.tempera.engine.TemplateNotFoundException;
 import site.kason.tempera.extension.Function;
-import site.kason.tempera.lex.LexException;
+import site.kason.klex.LexException;
 import site.kason.tempera.lexer.TexLexer;
 import site.kason.tempera.lexer.TexTokenStream;
 import site.kason.tempera.lexer.TokenStream;

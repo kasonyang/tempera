@@ -1,7 +1,7 @@
 package site.kason.tempera.util;
 
 import kalang.ast.ExprNode;
-import site.kason.tempera.lex.OffsetRange;
+import site.kason.klex.OffsetRange;
 
 /**
  *

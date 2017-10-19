@@ -1,7 +1,7 @@
 package site.kason.tempera.parser;
 
 import java.util.Objects;
-import site.kason.tempera.lex.OffsetRange;
+import site.kason.klex.OffsetRange;
 
 
 /**

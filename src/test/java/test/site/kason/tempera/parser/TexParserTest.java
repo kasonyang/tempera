@@ -8,7 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import site.kason.tempera.engine.TemplateAstLoader;
 import site.kason.tempera.engine.TemplateNotFoundException;
-import site.kason.tempera.lex.LexException;
+import site.kason.klex.LexException;
 import site.kason.tempera.parser.TemplateClassLoader;
 import site.kason.tempera.parser.Renderer;
 import site.kason.tempera.parser.TemplateParser;
