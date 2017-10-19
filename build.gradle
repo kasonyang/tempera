@@ -15,7 +15,7 @@ dependencies {
 }
 
 
-apply from:'maven-publish.gradle'
+apply from:'gradle/maven-publish.gradle'
 
 apply plugin: 'jacoco'
 jacocoTestReport {
