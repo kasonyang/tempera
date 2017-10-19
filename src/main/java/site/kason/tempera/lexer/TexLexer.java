@@ -4,14 +4,14 @@ import java.util.LinkedList;
 import java.util.List;
 import kamons.array.ArrayUtil;
 import kamons.string.LiteralParser;
-import site.kason.tempera.lex.CharStream;
-import site.kason.tempera.lex.Lexer;
-import site.kason.tempera.lex.OffsetRange;
-import site.kason.tempera.lex.LexException;
-import site.kason.tempera.lex.StringCharStream;
-import site.kason.tempera.lex.TokenFactory;
-import site.kason.tempera.lex.nfa.NFA;
-import site.kason.tempera.lex.nfa.NFAUtil;
+import site.kason.klex.CharStream;
+import site.kason.klex.Klexer;
+import site.kason.klex.OffsetRange;
+import site.kason.klex.LexException;
+import site.kason.klex.StringCharStream;
+import site.kason.klex.TokenFactory;
+import site.kason.klex.nfa.NFA;
+import site.kason.klex.util.NFAUtil;
 import static site.kason.tempera.lexer.TexTokenType.*;
 
 /**
@@ -20,7 +20,7 @@ import static site.kason.tempera.lexer.TexTokenType.*;
  */
 public class TexLexer {
 
-  private Lexer<TexToken, TexTokenInfo> tagLexer;
+  private Klexer<TexToken, TexTokenInfo> tagLexer;
 
   public static final LiteralParser LITERAL_PARSER = LiteralParser.createDefault();
 
@@ -29,7 +29,7 @@ public class TexLexer {
   }
 
   private static TexTokenInfo tk(TexTokenType token, int priority, String rule) {
-    return tk(token, priority, NFAUtil.of(rule));
+    return tk(token, priority, NFAUtil.ofString(rule));
   }
 
   private static TexTokenInfo[] getTokenInfos(String startTag, String endTag) {
@@ -85,12 +85,12 @@ public class TexLexer {
       tk(IDENTITY, p++, NFAUtil.range('a', 'z').or(NFAUtil.range('A', 'Z'))
       .concat(NFAUtil.range('a', 'z').or(NFAUtil.range('A', 'Z')).closure())),
       tk(STRING, p++,
-      NFAUtil.of("\"").concat(
+      NFAUtil.ofString("\"").concat(
       NFAUtil.exclude('"', '\\').or(
-      NFAUtil.of("\\").concat(NFAUtil.oneOf(ArrayUtil.toInts(LITERAL_PARSER.getSupportedEscapeChars())))
+      NFAUtil.ofString("\\").concat(NFAUtil.oneOf(ArrayUtil.toInts(LITERAL_PARSER.getSupportedEscapeChars())))
       ).closure()
       ).concat(
-      NFAUtil.of("\"")
+      NFAUtil.ofString("\"")
       )
       )
     };
@@ -112,7 +112,7 @@ public class TexLexer {
     this.startTag = leftDelimiter;
     this.endTag = rightDelimiter;
     charStream = new StringCharStream(input);
-    this.tagLexer = new Lexer<>(charStream, getTokenInfos(this.startTag, this.endTag), new TokenFactory<TexToken, TexTokenInfo>() {
+    this.tagLexer = new Klexer<>(charStream, getTokenInfos(this.startTag, this.endTag), new TokenFactory<TexToken, TexTokenInfo>() {
       @Override
       public TexToken createToken(TexTokenInfo tokenType,
               OffsetRange offset, int[] chars) {
@@ -120,7 +120,7 @@ public class TexLexer {
       }
 
       @Override
-      public TexToken createEOIToken(OffsetRange offset) {
+      public TexToken createEOFToken(OffsetRange offset) {
         return new TexToken(TexTokenType.EOF, offset, "");
       }
 
@@ -204,7 +204,7 @@ public class TexLexer {
     NFA d4 = NFAUtil.range('0', '9');
     NFA d5 = NFAUtil.range('0', '9');
     NFA d6 = NFAUtil.range('0', '9');
-    NFA dot = NFAUtil.of(".");
+    NFA dot = NFAUtil.ofString(".");
     NFA intNFA = d1.concat(d2.closure());
     NFA floatNFA = d3.concat(d4.closure()).concat(dot).concat(d5.concat(d6.closure()));
     return intNFA.or(floatNFA);

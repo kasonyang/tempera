@@ -1,13 +1,13 @@
 package site.kason.tempera.lexer;
 
-import site.kason.tempera.lex.TokenInfo;
-import site.kason.tempera.lex.nfa.NFA;
+import site.kason.klex.TokenRule;
+import site.kason.klex.nfa.NFA;
 
 /**
  *
  * @author Kason Yang
  */
-public class TexTokenInfo implements TokenInfo {
+public class TexTokenInfo implements TokenRule {
 
     private int priority;
     private NFA nfa;

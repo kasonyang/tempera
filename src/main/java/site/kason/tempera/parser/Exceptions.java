@@ -2,8 +2,8 @@ package site.kason.tempera.parser;
 
 import javax.annotation.Nullable;
 import kalang.core.Type;
-import site.kason.tempera.lex.LexException;
-import site.kason.tempera.lex.OffsetRange;
+import site.kason.klex.LexException;
+import site.kason.klex.OffsetRange;
 import site.kason.tempera.lexer.TexToken;
 import site.kason.tempera.lexer.TexTokenType;
 

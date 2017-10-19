@@ -1,7 +1,7 @@
 package site.kason.tempera.type;
 
-import site.kason.tempera.lex.OffsetRange;
-import site.kason.tempera.lex.TokenFactory;
+import site.kason.klex.OffsetRange;
+import site.kason.klex.TokenFactory;
 
 /**
  *
@@ -16,7 +16,7 @@ public class TypeTokenFactory implements TokenFactory<TypeToken, TypeTokenInfo> 
     }
 
     @Override
-    public TypeToken createEOIToken(OffsetRange offset) {
+    public TypeToken createEOFToken(OffsetRange offset) {
         return new TypeToken(TypeTokenInfo.EOI,offset.getStartOffset(),offset.getStopOffset(),"");
     }
 

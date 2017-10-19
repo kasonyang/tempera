@@ -1,24 +1,21 @@
 package site.kason.tempera.type;
 
-import site.kason.tempera.lex.CharStream;
-import site.kason.tempera.lex.Lexer;
-import site.kason.tempera.lex.StringCharStream;
+import site.kason.klex.CharStream;
+import site.kason.klex.Klexer;
+import site.kason.klex.StringCharStream;
 
 /**
  *
  * @author Kason Yang
  */
-public class TypeLexer extends Lexer<TypeToken, TypeTokenInfo>{
+public class TypeLexer extends Klexer<TypeToken, TypeTokenInfo> {
 
-    public TypeLexer(String input) {
-        this(new StringCharStream(input));
-    }
+  public TypeLexer(String input) {
+    this(new StringCharStream(input));
+  }
 
-    public TypeLexer(CharStream charBuffer) {
-        super(charBuffer, TypeTokenInfo.values(), new TypeTokenFactory());
-    }
-    
-    
-    
+  public TypeLexer(CharStream charBuffer) {
+    super(charBuffer, TypeTokenInfo.values(), new TypeTokenFactory());
+  }
 
 }

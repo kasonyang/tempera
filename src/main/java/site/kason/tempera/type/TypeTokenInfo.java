@@ -1,15 +1,15 @@
 package site.kason.tempera.type;
 
 import javax.annotation.Nullable;
-import site.kason.tempera.lex.TokenInfo;
-import site.kason.tempera.lex.nfa.NFA;
-import site.kason.tempera.lex.nfa.NFAUtil;
+import site.kason.klex.TokenRule;
+import site.kason.klex.nfa.NFA;
+import site.kason.klex.util.NFAUtil;
 
 /**
  *
  * @author Kason Yang
  */
-public enum TypeTokenInfo implements TokenInfo {
+public enum TypeTokenInfo implements TokenRule {
     
     LEFT_DELIMIT("<"),
     RIGHT_DELIMIT(">"),
@@ -17,9 +17,9 @@ public enum TypeTokenInfo implements TokenInfo {
     LBRACK("["),
     RBRACK("]"),
     NAME(
-            NFAUtil.range('a', 'z').or(NFAUtil.range('A', 'Z')).or(NFAUtil.oneOf(".","_"))
+            NFAUtil.range('a', 'z').or(NFAUtil.range('A', 'Z')).or(NFAUtil.oneOfString(".","_"))
                 .concat(
-                        NFAUtil.range('a', 'z').or(NFAUtil.range('A', 'Z')).or(NFAUtil.oneOf(".","_")).or(NFAUtil.range('0', '9')).closure()
+                        NFAUtil.range('a', 'z').or(NFAUtil.range('A', 'Z')).or(NFAUtil.oneOfString(".","_")).or(NFAUtil.range('0', '9')).closure()
                 )
     ),
     EOI((NFA)null)
@@ -30,7 +30,7 @@ public enum TypeTokenInfo implements TokenInfo {
     
     
     private TypeTokenInfo(String text){
-        this(NFAUtil.oneOf(text));
+        this(NFAUtil.oneOfString(text));
     }
 
     private TypeTokenInfo(NFA nfa) {

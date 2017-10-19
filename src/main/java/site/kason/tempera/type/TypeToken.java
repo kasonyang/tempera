@@ -1,7 +1,5 @@
 package site.kason.tempera.type;
 
-import site.kason.tempera.lex.Token;
-
 /**
  *
  * @author Kason Yang

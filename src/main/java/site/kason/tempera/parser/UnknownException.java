@@ -1,6 +1,6 @@
 package site.kason.tempera.parser;
 
-import site.kason.tempera.lex.OffsetRange;
+import site.kason.klex.OffsetRange;
 
 /**
  *
