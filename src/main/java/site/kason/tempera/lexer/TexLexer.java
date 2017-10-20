@@ -2,7 +2,6 @@ package site.kason.tempera.lexer;
 
 import java.util.LinkedList;
 import java.util.List;
-import kamons.array.ArrayUtil;
 import kamons.string.LiteralParser;
 import site.kason.klex.CharStream;
 import site.kason.klex.Klexer;
@@ -81,18 +80,9 @@ public class TexLexer {
       tk(GE, p++, ">="),
       tk(NE, p++, "!="),
       tk(PIPE,p++,"|"),
-      tk(NUMBER, p++,createNumberNFA()),
-      tk(IDENTITY, p++, NFAUtil.range('a', 'z').or(NFAUtil.range('A', 'Z'))
-      .concat(NFAUtil.range('a', 'z').or(NFAUtil.range('A', 'Z')).closure())),
-      tk(STRING, p++,
-      NFAUtil.ofString("\"").concat(
-      NFAUtil.exclude('"', '\\').or(
-      NFAUtil.ofString("\\").concat(NFAUtil.oneOf(ArrayUtil.toInts(LITERAL_PARSER.getSupportedEscapeChars())))
-      ).closure()
-      ).concat(
-      NFAUtil.ofString("\"")
-      )
-      )
+      tk(NUMBER, p++,TexNFA.createNumber()),
+      tk(IDENTITY, p++,TexNFA.createIdentity()),
+      tk(STRING, p++,TexNFA.createString())
     };
   }
   private final String input;
@@ -195,19 +185,6 @@ public class TexLexer {
       result.add(tk);
     }
     return result;
-  }
-  
-  private static NFA createNumberNFA(){
-    NFA d1 = NFAUtil.range('0', '9');
-    NFA d2 = NFAUtil.range('0', '9');
-    NFA d3 = NFAUtil.range('0', '9');
-    NFA d4 = NFAUtil.range('0', '9');
-    NFA d5 = NFAUtil.range('0', '9');
-    NFA d6 = NFAUtil.range('0', '9');
-    NFA dot = NFAUtil.ofString(".");
-    NFA intNFA = d1.concat(d2.closure());
-    NFA floatNFA = d3.concat(d4.closure()).concat(dot).concat(d5.concat(d6.closure()));
-    return intNFA.or(floatNFA);
   }
   
   private TexToken createTextToken(int len) {
