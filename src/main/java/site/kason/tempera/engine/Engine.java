@@ -15,6 +15,8 @@ import kalang.compiler.JavaAstLoader;
 import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.RenderContext;
+import site.kason.tempera.parser.ClassNameStrategy;
+import site.kason.tempera.parser.DefaultClassNameStrategy;
 import site.kason.tempera.parser.TemplateClassLoader;
 import site.kason.tempera.parser.Renderer;
 import site.kason.tempera.parser.TemplateParser;
@@ -37,6 +39,9 @@ public class Engine implements TemplateAstLoader {
   private final AstLoader astLoader;
   
   private final RenderContext renderContext = new RenderContext();
+  
+  //TODO make configurable
+  private final ClassNameStrategy templateClassNameStrategy = new DefaultClassNameStrategy();
   
   private final String leftDelimiter,rightDelimiter;
 
@@ -76,7 +81,10 @@ public class Engine implements TemplateAstLoader {
     Template tpl = cacheKey == null ? null : this.templateNameToCache.get(cacheKey);
     if (tpl == null) {
       //TexParser parser = new TexParser(source.getContent(),this,templateClassLoader);
-      TemplateParser parser = new TemplateParser(source.getName(),source.getContent(),leftDelimiter,rightDelimiter, this, templateClassLoader);
+      String tplContent = source.getContent();
+      String tplName = source.getName();
+      String tplClassName = templateClassNameStrategy.generateClassName(tplName, tplContent, cacheKey);
+      TemplateParser parser = new TemplateParser(tplClassName,tplName,tplContent,leftDelimiter,rightDelimiter, this, templateClassLoader);
       ClassNode ast = parser.getClassNode();
       this.templateToAsts.put(source, ast);
       Class<Renderer> clazz = parser.parse();

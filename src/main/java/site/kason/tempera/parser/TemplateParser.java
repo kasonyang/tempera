@@ -102,16 +102,16 @@ public class TemplateParser {
 
   private final TypeNameResolver typeNameResolver;
 
-  public TemplateParser(String templateName, String template,String leftDelimiter,String rightDelimiter, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
-    this(templateName, new TexTokenStream(new TexLexer(template,leftDelimiter,rightDelimiter), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
+  public TemplateParser(String className,String templateName, String template,String leftDelimiter,String rightDelimiter, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
+    this(className,templateName, new TexTokenStream(new TexLexer(template,leftDelimiter,rightDelimiter), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
   }
 
-  public TemplateParser(String templateName, TokenStream ts, TemplateAstLoader templateAstLoader, TemplateClassLoader classParser) {
+  public TemplateParser(String className,String templateName, TokenStream ts, TemplateAstLoader templateAstLoader, TemplateClassLoader classParser) {
     this.classParser = classParser;
     this.astLoader = templateAstLoader;
     this.tokenStream = new BufferedTokenStream(ts);
     ClassNode cn = new ClassNode();
-    cn.name = templateName;
+    cn.name = className;
     cn.modifier = Modifier.PUBLIC;
     try {
       cn.superType = Types.getClassType(Renderer.class.getName());

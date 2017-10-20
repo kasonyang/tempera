@@ -1,6 +1,7 @@
 package test.site.kason.tempera.engine;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,6 +86,16 @@ public class TexEngineTest {
     String resultFor = engine.compile("forvar").render(datafor);
     assertEquals("1+2+3+", resultFor);
 
+  }
+  
+  @Test
+  public void testReload() throws IOException{
+    String tplName = "hello";
+    Engine engine = new Engine();
+    Template tpl = engine.compileInline("hello",tplName , null);
+    Template tpl2 = engine.compileInline("hi", tplName, null);
+    assertEquals("hello", tpl.render(Collections.EMPTY_MAP));
+    assertEquals("hi", tpl2.render(Collections.EMPTY_MAP));
   }
 
 }
