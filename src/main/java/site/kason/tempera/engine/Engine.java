@@ -40,8 +40,7 @@ public class Engine implements TemplateAstLoader {
   
   private final RenderContext renderContext = new RenderContext();
   
-  //TODO make configurable
-  private final ClassNameStrategy templateClassNameStrategy = new DefaultClassNameStrategy();
+  private final ClassNameStrategy templateClassNameStrategy;
   
   private final String leftDelimiter,rightDelimiter;
 
@@ -74,6 +73,7 @@ public class Engine implements TemplateAstLoader {
     }
     this.leftDelimiter = conf.getLeftDelimiter();
     this.rightDelimiter = conf.getRightDelimiter();
+    this.templateClassNameStrategy = conf.getClassNameStrategy();
   }
 
   public Template compile(TemplateSource source) throws IOException {

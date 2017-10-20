@@ -12,12 +12,16 @@ import site.kason.tempera.filters.LowerFilter;
 import site.kason.tempera.filters.RawFilter;
 import site.kason.tempera.filters.UpperFilter;
 import site.kason.tempera.loader.ClasspathTemplateLoader;
+import site.kason.tempera.parser.ClassNameStrategy;
+import site.kason.tempera.parser.DefaultClassNameStrategy;
 
 /**
  *
  * @author Kason Yang
  */
 public class Configuration {
+  
+  private final static ClassNameStrategy DEFAULT_CLASS_NAME_STRATEGY = new DefaultClassNameStrategy();
   
   public final static Configuration DEFAULT;
   public final static Configuration DEFAULT_HTML;
@@ -49,6 +53,8 @@ public class Configuration {
   private String leftDelimiter = "{{";
   
   private String rightDelimiter = "}}";
+  
+  private ClassNameStrategy classNameStrategy = DEFAULT_CLASS_NAME_STRATEGY;
 
   public Configuration() {
   }
@@ -127,6 +133,14 @@ public class Configuration {
 
   public void setRightDelimiter(String rightDelimiter) {
     this.rightDelimiter = rightDelimiter;
+  }
+
+  public ClassNameStrategy getClassNameStrategy() {
+    return classNameStrategy;
+  }
+
+  public void setClassNameStrategy(ClassNameStrategy classNameStrategy) {
+    this.classNameStrategy = classNameStrategy;
   }
 
 }
