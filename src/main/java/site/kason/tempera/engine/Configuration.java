@@ -66,6 +66,7 @@ public class Configuration {
     this.filters.putAll(config.getFilters());
     this.functions.putAll(config.getFunctions());
     this.defaultFilter = config.getDefaultFilter();
+    this.classNameStrategy = config.getClassNameStrategy();
   }  
   
   @Nullable
