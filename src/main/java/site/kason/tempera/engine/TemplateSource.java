@@ -17,13 +17,14 @@ public interface TemplateSource {
    * @return
    * @throws IOException
    */
-  String getContent() throws IOException;
+  String getContent();
 
   /**
    * get the key for cache
    *
    * @return the key for cache,return null if can not be cache.
    */
+  //TODO remove
   @Nullable
   String getCacheKey();
 

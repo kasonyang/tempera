@@ -25,7 +25,7 @@ public class StringTemplateSource implements TemplateSource {
   }
 
   @Override
-  public String getContent() throws IOException {
+  public String getContent(){
     return content;
   }
 

@@ -9,6 +9,6 @@ import site.kason.tempera.engine.TemplateSource;
  */
 public interface ClassNameStrategy {
 
-  public String generateClassName(String templateName,String content,@Nullable String cacheKey);
+  public String generateClassName(TemplateSource templateSource);
 
 }

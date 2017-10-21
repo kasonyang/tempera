@@ -88,12 +88,11 @@ public class Engine implements TemplateAstLoader {
 
   public Template compile(TemplateSource source) throws IOException {
     String tplName = source.getName();
-    String cacheKey = source.getCacheKey();
     long lastModified = source.lastModified();
     CompileCache compileCache = getCompiledCache(tplName, lastModified);
     if (compileCache==null) {
       String tplContent = source.getContent();
-      String tplClassName = templateClassNameStrategy.generateClassName(tplName, tplContent, cacheKey);
+      String tplClassName = templateClassNameStrategy.generateClassName(source);
       TemplateParser parser = new TemplateParser(tplClassName,tplName,tplContent,leftDelimiter,rightDelimiter, this, templateClassLoader);
       ClassNode ast = parser.getClassNode();
       compileCache = new CompileCache();

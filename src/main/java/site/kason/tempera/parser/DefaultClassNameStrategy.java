@@ -12,8 +12,8 @@ public class DefaultClassNameStrategy implements ClassNameStrategy {
   private final static String CLASS_NAME_PREFIX = "site.kason.tempera.generated.template.Tpl";
 
   @Override
-  public String generateClassName(String templateName, String content, String cacheKey) {
-    return CLASS_NAME_PREFIX + DigestUtils.md5Hex(content);
+  public String generateClassName(TemplateSource templateSource) {
+    return CLASS_NAME_PREFIX + DigestUtils.md5Hex(templateSource.getContent());
   }
 
 }
