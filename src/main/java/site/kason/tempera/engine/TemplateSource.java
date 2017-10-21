@@ -20,15 +20,6 @@ public interface TemplateSource {
   String getContent();
 
   /**
-   * get the key for cache
-   *
-   * @return the key for cache,return null if can not be cache.
-   */
-  //TODO remove
-  @Nullable
-  String getCacheKey();
-
-  /**
    * Get the path of template. Just for the convenience of debugging.
    *
    * @return

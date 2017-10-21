@@ -42,7 +42,7 @@ public class TexEngineTest {
   @Test
   public void test() throws Exception {
     Engine engine = new Engine();
-    Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello.template", null);
+    Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello.template");
     StringWriter stringWriter = new StringWriter();
     tpl.render(Collections.singletonMap("name", "world"),stringWriter);
     String result = stringWriter.toString();
@@ -92,8 +92,8 @@ public class TexEngineTest {
   public void testReload() throws IOException{
     String tplName = "hello";
     Engine engine = new Engine();
-    Template tpl = engine.compileInline("hello",tplName , null);
-    Template tpl2 = engine.compileInline("hi", tplName, null);
+    Template tpl = engine.compileInline("hello",tplName);
+    Template tpl2 = engine.compileInline("hi", tplName);
     assertEquals("hello", tpl.render(Collections.EMPTY_MAP));
     assertEquals("hi", tpl2.render(Collections.EMPTY_MAP));
   }

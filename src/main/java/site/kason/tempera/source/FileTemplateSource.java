@@ -31,15 +31,6 @@ public class FileTemplateSource implements TemplateSource {
   }
 
   @Override
-  public String getCacheKey() {
-    try {
-      return file.getCanonicalPath() + file.lastModified();
-    } catch (IOException ex) {
-      return null;
-    }
-  }
-
-  @Override
   public String getPath() {
     try {
       return file.getCanonicalPath();

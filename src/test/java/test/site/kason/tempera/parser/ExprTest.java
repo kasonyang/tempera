@@ -89,7 +89,7 @@ public class ExprTest {
       
     });
     Engine engine = new Engine(conf);
-    Template template = engine.compileInline(tpl, TexTemplateParserTest.class.getSimpleName(), null);
+    Template template = engine.compileInline(tpl, TexTemplateParserTest.class.getSimpleName());
     String out = template.render(data);
     assertEquals(expected, out);
   }

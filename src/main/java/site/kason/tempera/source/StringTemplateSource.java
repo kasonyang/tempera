@@ -30,11 +30,6 @@ public class StringTemplateSource implements TemplateSource {
   }
 
   @Override
-  public String getCacheKey() {
-    return this.sourceName;
-  }
-
-  @Override
   public String getPath() {
     return this.sourceName;
   }

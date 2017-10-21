@@ -138,19 +138,11 @@ public class Engine implements TemplateAstLoader {
    * Compile a string to template.This method is thread-safe.
    * @param templateContent the template's content
    * @param templateName the template's name
-   * @param cacheKey
    * @return the compiled template
    * @throws IOException 
    */
-  public Template compileInline(String templateContent, String templateName, @Nullable String cacheKey) throws IOException {
-    return compile(new StringTemplateSource(templateName, templateContent) {
-
-      @Override
-      public String getCacheKey() {
-        return cacheKey;
-      }
-
-    });
+  public Template compileInline(String templateContent, String templateName) throws IOException {
+    return compile(new StringTemplateSource(templateName, templateContent));
   }
 
   @Override
