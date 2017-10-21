@@ -12,6 +12,7 @@ import kalang.AstNotFoundException;
 import kalang.ast.ClassNode;
 import kalang.compiler.AstLoader;
 import kalang.compiler.JavaAstLoader;
+import kalang.exception.Exceptions;
 import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.RenderContext;
@@ -27,13 +28,21 @@ import site.kason.tempera.source.StringTemplateSource;
  * @author Kason Yang
  */
 public class Engine implements TemplateAstLoader {
+  
+  private static class CompileCache{
+    Template template;
+    //TODO rename to lastModified
+    long sourceLastModified;
+    ClassNode classNode;
+  }
 
   @Nullable
   private final TemplateLoader templateLoader;
-
-  private final Map<String, Template> templateNameToCache = new HashMap();
-
-  private final Map<TemplateSource, ClassNode> templateToAsts = new HashMap();
+  
+  /**
+   * template name => CompileCache
+   */
+  private final Map<String,CompileCache> compileCacheMap = new HashMap();
 
   private final TemplateClassLoader templateClassLoader;
 
@@ -78,23 +87,24 @@ public class Engine implements TemplateAstLoader {
   }
 
   public Template compile(TemplateSource source) throws IOException {
+    String tplName = source.getName();
     String cacheKey = source.getCacheKey();
-    Template tpl = cacheKey == null ? null : this.templateNameToCache.get(cacheKey);
-    if (tpl == null) {
-      //TexParser parser = new TexParser(source.getContent(),this,templateClassLoader);
+    long lastModified = source.lastModified();
+    CompileCache compileCache = getCompiledCache(tplName, lastModified);
+    if (compileCache==null) {
       String tplContent = source.getContent();
-      String tplName = source.getName();
       String tplClassName = templateClassNameStrategy.generateClassName(tplName, tplContent, cacheKey);
       TemplateParser parser = new TemplateParser(tplClassName,tplName,tplContent,leftDelimiter,rightDelimiter, this, templateClassLoader);
       ClassNode ast = parser.getClassNode();
-      this.templateToAsts.put(source, ast);
+      compileCache = new CompileCache();
+      compileCache.classNode = ast;
+      compileCache.sourceLastModified = lastModified;
+      this.compileCacheMap.put(tplName, compileCache);
       Class<Renderer> clazz = parser.parse();
-      tpl = new DefaultTemplate(clazz,renderContext);
-      if (cacheKey != null) {
-        this.templateNameToCache.put(cacheKey, tpl);
-      }
+      Template tpl = new DefaultTemplate(clazz,renderContext);
+      compileCache.template = tpl;
     }
-    return tpl;
+    return compileCache.template;
   }
 
   public Template compile(String templateName) throws IOException {
@@ -124,19 +134,30 @@ public class Engine implements TemplateAstLoader {
       throw new TemplateNotFoundException(templateName);
     }
     TemplateSource source = tplLoader.load(templateName);
-    ClassNode ast = this.templateToAsts.get(source);
-    if (ast != null) {
-      return ast;
+    long lastModified = source.lastModified();
+    CompileCache compileCache = this.getCompiledCache(templateName,lastModified);
+    if(compileCache==null){
+      compile(templateName);
+      compileCache = this.compileCacheMap.get(templateName);
+      if(compileCache==null){
+        throw Exceptions.unexceptedException("BUG:template not compiled:" + templateName);
+      }
     }
-    this.compile(source);
-    ast = this.templateToAsts.get(source);
-    assert ast != null;
-    return ast;
+    return compileCache.classNode;
   }
 
   @Override
   public ClassNode loadAst(String className) throws AstNotFoundException {
     return this.astLoader.loadAst(className);
+  }
+  
+  private CompileCache getCompiledCache(String tplName, long lastModified) {
+    CompileCache compiledTemplate = compileCacheMap.get(tplName);
+    if (compiledTemplate != null && compiledTemplate.sourceLastModified == lastModified) {//cache is out of date
+      return compiledTemplate;
+    } else {
+      return null;
+    }
   }
 
 }
