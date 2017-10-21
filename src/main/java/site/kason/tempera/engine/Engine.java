@@ -29,7 +29,6 @@ public class Engine implements TemplateAstLoader {
   private static class CompileCache {
 
     Template template;
-    //TODO rename to lastModified
     long sourceLastModified;
     ClassNode classNode;
   }
