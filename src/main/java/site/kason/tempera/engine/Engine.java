@@ -86,6 +86,12 @@ public class Engine implements TemplateAstLoader {
     this.templateClassNameStrategy = conf.getClassNameStrategy();
   }
 
+  /**
+   * Compile a source to template.This method is thread-safe.
+   * @param source the template source to compile
+   * @return the compiled template
+   * @throws IOException 
+   */
   public Template compile(TemplateSource source) throws IOException {
     String tplName = source.getName();
     long lastModified = source.lastModified();
@@ -114,6 +120,12 @@ public class Engine implements TemplateAstLoader {
     }
   }
 
+  /**
+   * Compile a template by name.This method is thread-safe.
+   * @param templateName the name of template
+   * @return the compiled template
+   * @throws IOException 
+   */
   public Template compile(String templateName) throws IOException {
     if (templateLoader == null) {
       throw new RuntimeException("no template loader found.");
@@ -122,6 +134,14 @@ public class Engine implements TemplateAstLoader {
     return compile(source);
   }
 
+  /**
+   * Compile a string to template.This method is thread-safe.
+   * @param templateContent the template's content
+   * @param templateName the template's name
+   * @param cacheKey
+   * @return the compiled template
+   * @throws IOException 
+   */
   public Template compileInline(String templateContent, String templateName, @Nullable String cacheKey) throws IOException {
     return compile(new StringTemplateSource(templateName, templateContent) {
 
