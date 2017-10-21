@@ -33,5 +33,7 @@ public interface TemplateSource {
    * @return
    */
   String getPath();
+  
+  long lastModified();
 
 }

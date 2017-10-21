@@ -11,6 +11,8 @@ public class StringTemplateSource implements TemplateSource {
 
   private final String content;
   private final String sourceName;
+  
+  private final long lastModified = System.currentTimeMillis();
 
   /**
    *
@@ -40,6 +42,11 @@ public class StringTemplateSource implements TemplateSource {
   @Override
   public String getName() {
     return this.sourceName;
+  }
+
+  @Override
+  public long lastModified() {
+    return this.lastModified;
   }
 
 }

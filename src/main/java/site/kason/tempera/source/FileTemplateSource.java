@@ -51,4 +51,9 @@ public class FileTemplateSource implements TemplateSource {
     return this.name;
   }
 
+  @Override
+  public long lastModified() {
+    return this.file.lastModified();
+  }
+
 }

@@ -20,6 +20,7 @@ import site.kason.tempera.parser.DefaultClassNameStrategy;
 import site.kason.tempera.parser.TemplateClassLoader;
 import site.kason.tempera.parser.Renderer;
 import site.kason.tempera.parser.TemplateParser;
+import site.kason.tempera.source.StringTemplateSource;
 
 /**
  *
@@ -105,26 +106,13 @@ public class Engine implements TemplateAstLoader {
   }
 
   public Template compileInline(String templateContent, String templateName, @Nullable String cacheKey) throws IOException {
-    return compile(new TemplateSource() {
-      @Override
-      public String getContent() {
-        return templateContent;
-      }
-
+    return compile(new StringTemplateSource(templateName, templateContent){
+      
       @Override
       public String getCacheKey() {
         return cacheKey;
       }
-
-      @Override
-      public String getPath() {
-        return templateName;
-      }
-
-      @Override
-      public String getName() {
-        return templateName;
-      }
+      
     });
   }
 
