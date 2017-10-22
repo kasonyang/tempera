@@ -44,7 +44,7 @@ public class FileTemplateLoader implements TemplateLoader {
       sfx = new String[]{""};
     }
     for (String s : sfx) {
-      File file = new File(this.baseDir, templateName.replace('.', '/') + s);
+      File file = new File(this.baseDir, templateName + s);
       if (file.exists()) {
         try{
           return new FileTemplateSource(templateName , file , this.encoding);

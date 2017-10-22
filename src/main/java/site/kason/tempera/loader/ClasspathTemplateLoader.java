@@ -41,7 +41,6 @@ public class ClasspathTemplateLoader implements TemplateLoader {
    * @param path the path
    */
   public void setPath(String path) {
-    path = path.replace('.', '/');
     if(!path.startsWith("/")){
       path = "/" + path;
     }
@@ -61,12 +60,11 @@ public class ClasspathTemplateLoader implements TemplateLoader {
 
   @Override
   public TemplateSource load(String templateName) throws TemplateNotFoundException {
-    templateName = templateName.replace('.', '/');
     if(templateName.startsWith("/")){
       templateName = templateName.substring(1);
     }
     for (String s : suffixs) {
-      String fullName = path + templateName.replace('.', '/') + s;
+      String fullName = path + templateName + s;
       InputStream is = ClasspathTemplateLoader.class.getResourceAsStream(fullName);
       if (is != null) {
         try {
