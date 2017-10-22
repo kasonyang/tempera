@@ -28,13 +28,14 @@ public class Configuration {
   static{
     DEFAULT = new Configuration();
     DEFAULT.setTemplateLoader(new ClasspathTemplateLoader());
-    DEFAULT.registerFilter("html", new HtmlFilter());
-    DEFAULT.registerFilter("js", new JsFilter());
-    DEFAULT.registerFilter("json", new JsonFilter());
     DEFAULT.registerFilter("lower", new LowerFilter());
     DEFAULT.registerFilter("raw", new RawFilter());
     DEFAULT.registerFilter("upper", new UpperFilter());
+    
     DEFAULT_HTML = new Configuration(DEFAULT);
+    DEFAULT_HTML.registerFilter("html", new HtmlFilter());
+    DEFAULT_HTML.registerFilter("js", new JsFilter());
+    DEFAULT_HTML.registerFilter("json", new JsonFilter());
     DEFAULT_HTML.setDefaultFilter("html");
   }
   
