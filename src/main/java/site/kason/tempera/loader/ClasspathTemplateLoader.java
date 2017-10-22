@@ -17,6 +17,8 @@ public class ClasspathTemplateLoader implements TemplateLoader {
 
   private final String[] suffixs;
   
+  private String encoding = "utf-8";
+  
   private String path = "/";
 
   public ClasspathTemplateLoader() {
@@ -49,6 +51,14 @@ public class ClasspathTemplateLoader implements TemplateLoader {
     this.path = path;
   }
 
+  public String getEncoding() {
+    return encoding;
+  }
+
+  public void setEncoding(String encoding) {
+    this.encoding = encoding;
+  }
+
   @Override
   public TemplateSource load(String templateName) throws TemplateNotFoundException {
     templateName = templateName.replace('.', '/');
@@ -60,7 +70,7 @@ public class ClasspathTemplateLoader implements TemplateLoader {
       InputStream is = ClasspathTemplateLoader.class.getResourceAsStream(fullName);
       if (is != null) {
         try {
-          String content = InputStreamUtil.readAsString(is, "utf-8");
+          String content = InputStreamUtil.readAsString(is, encoding);
           return new StringTemplateSource(templateName, content);
         } catch (IOException ex) {
           throw new TemplateNotFoundException(ex);
