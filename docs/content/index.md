@@ -21,7 +21,7 @@ The performance test could be found here:[https://github.com/kasonyang/template-
 
 gradle
 
-    compile 'site.kason:tempera:VERSION'
+    compile "site.kason:tempera:$VERSION"
 
 
 # Get started
@@ -29,21 +29,21 @@ gradle
 compile template from string:
 
     Engine engine = new Engine();
-    Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello.template", null);
+    Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello");
     String result = tpl.render(Collections.singletonMap("name", "world"));
     assertEquals("hello,world!", result);
 
 compile template from resource:
 
     Engine engine = new Engine();
-    Template tpl = engine.compile("templates.main");//compile template from resource:/templates/main.tplx
+    Template tpl = engine.compile("templates/main.tpr");//compile template from resource:/templates/main.tpr
     tpl.render(Collections.singletonMap("names", list),new StringWriter());
 
 compile template from file system:
 
     Configuration conf = new Configuration(Configuration.DEFAULT);
     conf.setTemplateLoader(new FileTemplateLoader("."));
-    Template tpl = engine.compile("templates.main");//compile template from file: ./templates/main.tplx
+    Template tpl = engine.compile("templates/main.tpr");//compile template from file: ./templates/main.tpr
     tpl.render(Collections.singletonMap("names", list),new StringWriter());
 
 # Declaring variables
