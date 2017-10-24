@@ -15,7 +15,6 @@ public interface TemplateSource {
    * get the content of template
    *
    * @return
-   * @throws IOException
    */
   String getContent();
 
