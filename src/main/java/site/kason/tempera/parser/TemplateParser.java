@@ -314,7 +314,7 @@ public class TemplateParser {
   }
 
   private Statement text() throws LexException {
-    Statement res = getCallStmt("append", new ConstExpr(token.getText()));
+    Statement res = getCallStmt("rawAppend", new ConstExpr(token.getText()));
     consume();
     return res;
   }
