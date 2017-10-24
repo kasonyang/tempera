@@ -56,6 +56,7 @@ public class ExprTest {
   @Test
   public void testFunction() throws IOException{
     assertRender("4", "{{length(\"test\")}}", Collections.EMPTY_MAP);
+    assertRender("1.23", "{{format(\"%.2f\",1.231111)}}");
   }
   
   @Test
@@ -70,7 +71,7 @@ public class ExprTest {
   
   @Test
   public void testEscape() throws IOException{
-    assertRender("&amp;","{{\"&\"}}",Collections.EMPTY_MAP);
+    assertRender("&&amp;","&{{\"&\"}}",Collections.EMPTY_MAP);
     assertRender("&", "{{\"&\"|raw}}",Collections.EMPTY_MAP);
   }
   
