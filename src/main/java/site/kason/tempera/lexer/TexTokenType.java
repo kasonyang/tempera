@@ -39,6 +39,7 @@ public enum TexTokenType {
   LOGIC_NOT,
   LOGIC_AND,
   LOGIC_OR,
+  BIT_AND,
   COMMA,//,
   ADD,
   SUB,

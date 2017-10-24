@@ -41,6 +41,7 @@ public class TexLexer {
       tk(IN, p++, "in"),
       tk(START_TAG, p++, startTag),
       tk(END_TAG, p++, endTag),
+      tk(BIT_AND,p++,"&"),
       tk(COLON, p++, ":"),
       tk(VAR, p++, "var"),
       tk(VAL, p++, "val"),

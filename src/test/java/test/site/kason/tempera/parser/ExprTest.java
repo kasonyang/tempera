@@ -66,13 +66,13 @@ public class ExprTest {
   
   @Test
   public void testStringEscape() throws IOException{
-    assertRender("\"", "{{\"\\\"\"|raw}}");
+    assertRender("\"", "{{&\"\\\"\"}}");
   }
   
   @Test
   public void testEscape() throws IOException{
     assertRender("&&amp;","&{{\"&\"}}",Collections.EMPTY_MAP);
-    assertRender("&", "{{\"&\"|raw}}",Collections.EMPTY_MAP);
+    assertRender("&", "{{&\"&\"}}",Collections.EMPTY_MAP);
   }
   
   private void assertRender(String expected,String tpl) throws IOException{

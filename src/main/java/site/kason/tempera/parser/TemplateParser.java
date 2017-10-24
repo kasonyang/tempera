@@ -538,27 +538,33 @@ public class TemplateParser {
         return layout();
       case REPLACE:
         return replace();
+      case BIT_AND:
+        return rawExpr();
       default:
         if(isExprPrefix(la1.getTokenType())){
           ExprStmt res;
           expect(START_TAG);
           ExprNode expr = this.expr();
-          if(isToken(PIPE)){
-            while(isToken(PIPE)){
-              consume();
-              String filterName = expect(IDENTITY).getText();
-              expr = this.getCallExpr("callFilter", new ConstExpr(filterName),expr);
-            }
-            res = getCallStmt("rawAppend",expr);
-          }else{
-            res = getCallStmt("append", expr);
+          while(isToken(PIPE)){
+            consume();
+            String filterName = expect(IDENTITY).getText();
+            expr = this.getCallExpr("callFilter", new ConstExpr(filterName),expr);
           }
+          res = getCallStmt("append", expr);
           expect(END_TAG);
           return res;
         }else{
           return null;
         }
     }
+  }
+  
+  private Statement rawExpr() throws LexException{
+    expect(START_TAG);
+    expect(BIT_AND);
+    ExprNode e = expr();
+    expect(END_TAG);
+    return this.getCallStmt("rawAppend",e);
   }
   
   private boolean isExprPrefix(TexTokenType type){
