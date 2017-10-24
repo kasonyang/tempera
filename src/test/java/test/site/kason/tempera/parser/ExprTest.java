@@ -10,9 +10,6 @@ import site.kason.tempera.engine.Configuration;
 import site.kason.tempera.engine.Template;
 import site.kason.tempera.engine.Engine;
 import site.kason.tempera.extension.Function;
-import site.kason.tempera.filters.HtmlFilter;
-import site.kason.tempera.filters.RawFilter;
-import site.kason.tempera.model.RenderContext;
 
 /**
  *

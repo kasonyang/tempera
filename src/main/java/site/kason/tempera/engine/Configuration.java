@@ -9,7 +9,6 @@ import site.kason.tempera.filters.HtmlFilter;
 import site.kason.tempera.filters.JsFilter;
 import site.kason.tempera.filters.JsonFilter;
 import site.kason.tempera.filters.LowerFilter;
-import site.kason.tempera.filters.RawFilter;
 import site.kason.tempera.filters.UpperFilter;
 import site.kason.tempera.functions.FormatFunction;
 import site.kason.tempera.loader.ClasspathTemplateLoader;
@@ -30,7 +29,6 @@ public class Configuration {
     DEFAULT = new Configuration();
     DEFAULT.setTemplateLoader(new ClasspathTemplateLoader());
     DEFAULT.registerFilter("lower", new LowerFilter());
-    DEFAULT.registerFilter("raw", new RawFilter());
     DEFAULT.registerFilter("upper", new UpperFilter());
     DEFAULT.registerFunction("format", new FormatFunction());
     
