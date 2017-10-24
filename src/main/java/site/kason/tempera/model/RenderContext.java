@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import site.kason.tempera.engine.EscapeHandler;
 import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
 
@@ -14,19 +15,19 @@ import site.kason.tempera.extension.Function;
  */
 public class RenderContext {
 
-  private final List<Filter> defaultFilters = new LinkedList();
+  private EscapeHandler escapeHandler;
   
   private final Map<String,Filter> filters = new HashMap();
   
   private final Map<String,Function> functions = new HashMap();
-  
 
-  public Filter[] getDefaultFilters() {
-    return defaultFilters.toArray(new Filter[0]);
+  @Nullable
+  public EscapeHandler getEscapeHandler() {
+    return escapeHandler;
   }
 
-  public void addDefaultFilter(Filter defaultFilter) {
-    this.defaultFilters.add(defaultFilter);
+  public void setEscapeHandler(EscapeHandler escapeHandler) {
+    this.escapeHandler = escapeHandler;
   }
 
   public void addFilter(String name,Filter filter) {

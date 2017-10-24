@@ -5,12 +5,12 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
-import site.kason.tempera.filters.HtmlFilter;
 import site.kason.tempera.filters.JsFilter;
 import site.kason.tempera.filters.JsonFilter;
 import site.kason.tempera.filters.LowerFilter;
 import site.kason.tempera.filters.UpperFilter;
 import site.kason.tempera.functions.FormatFunction;
+import site.kason.tempera.html.HtmlEscapeHandler;
 import site.kason.tempera.loader.ClasspathTemplateLoader;
 import site.kason.tempera.parser.ClassNameStrategy;
 import site.kason.tempera.parser.DefaultClassNameStrategy;
@@ -33,10 +33,9 @@ public class Configuration {
     DEFAULT.registerFunction("format", new FormatFunction());
     
     DEFAULT_HTML = new Configuration(DEFAULT);
-    DEFAULT_HTML.registerFilter("html", new HtmlFilter());
     DEFAULT_HTML.registerFilter("js", new JsFilter());
     DEFAULT_HTML.registerFilter("json", new JsonFilter());
-    DEFAULT_HTML.setDefaultFilter("html");
+    DEFAULT_HTML.setEscapeHandler(new HtmlEscapeHandler());
   }
   
   private String cacheDir;
@@ -49,7 +48,7 @@ public class Configuration {
   
   private Map<String,Filter> filters = new HashMap();
   
-  private String defaultFilter = "";
+  private EscapeHandler escapeHandler;
   
   private String leftDelimiter = "{{";
   
@@ -66,7 +65,7 @@ public class Configuration {
     this.templateLoader = config.getTemplateLoader();
     this.filters.putAll(config.getFilters());
     this.functions.putAll(config.getFunctions());
-    this.defaultFilter = config.getDefaultFilter();
+    this.escapeHandler = config.getEscapeHandler();
     this.classNameStrategy = config.getClassNameStrategy();
   }  
   
@@ -112,13 +111,14 @@ public class Configuration {
   public Map<String,Function> getFunctions(){
     return this.functions;
   }
-  
-  public String getDefaultFilter() {
-    return defaultFilter;
+
+  @Nullable
+  public EscapeHandler getEscapeHandler() {
+    return escapeHandler;
   }
 
-  public void setDefaultFilter(String defaultFilter) {
-    this.defaultFilter = defaultFilter;
+  public void setEscapeHandler(EscapeHandler escapeHandler) {
+    this.escapeHandler = escapeHandler;
   }
 
   public String getLeftDelimiter() {

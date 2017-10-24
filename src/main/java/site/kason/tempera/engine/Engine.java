@@ -74,12 +74,7 @@ public class Engine implements TemplateAstLoader {
     for (Map.Entry<String, Function> e : conf.getFunctions().entrySet()) {
       renderContext.addFunction(e.getKey(), e.getValue());
     }
-    String defaultFilterName = conf.getDefaultFilter();
-    if (defaultFilterName != null && !defaultFilterName.isEmpty()) {
-      Filter defaultFilter = filters.get(defaultFilterName);
-      Objects.requireNonNull(defaultFilter, "filter not found:" + defaultFilterName);
-      renderContext.addDefaultFilter(defaultFilter);
-    }
+    renderContext.setEscapeHandler(conf.getEscapeHandler());
     this.leftDelimiter = conf.getLeftDelimiter();
     this.rightDelimiter = conf.getRightDelimiter();
     this.templateClassNameStrategy = conf.getClassNameStrategy();
