@@ -1,4 +1,4 @@
-package site.kason.tempera.filters;
+package site.kason.tempera.html;
 
 import java.util.Objects;
 import org.apache.commons.text.StringEscapeUtils;
