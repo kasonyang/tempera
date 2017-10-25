@@ -5,6 +5,11 @@ package site.kason.tempera.engine;
  */
 public interface EscapeHandler {
   
+  /**
+   * Escape string
+   * @param value the string to escape
+   * @return the escaped string
+   */
   String escape(String value);
 
 }
