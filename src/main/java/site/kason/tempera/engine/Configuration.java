@@ -10,6 +10,8 @@ import site.kason.tempera.filters.JsonFilter;
 import site.kason.tempera.filters.LowerFilter;
 import site.kason.tempera.filters.UpperFilter;
 import site.kason.tempera.functions.FormatFunction;
+import site.kason.tempera.functions.LeftFunction;
+import site.kason.tempera.functions.RightFunction;
 import site.kason.tempera.html.HtmlEscapeHandler;
 import site.kason.tempera.loader.ClasspathTemplateLoader;
 import site.kason.tempera.parser.ClassNameStrategy;
@@ -31,6 +33,8 @@ public class Configuration {
     DEFAULT.registerFilter("lower", new LowerFilter());
     DEFAULT.registerFilter("upper", new UpperFilter());
     DEFAULT.registerFunction("format", new FormatFunction());
+    DEFAULT.registerFunction("left", new LeftFunction());
+    DEFAULT.registerFunction("right", new RightFunction());
     
     DEFAULT_HTML = new Configuration(DEFAULT);
     DEFAULT_HTML.registerFilter("js", new JsFilter());
