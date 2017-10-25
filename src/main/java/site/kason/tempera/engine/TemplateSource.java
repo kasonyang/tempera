@@ -1,37 +1,36 @@
 package site.kason.tempera.engine;
 
-import java.io.IOException;
-import javax.annotation.Nullable;
-
 /**
  *
  * @author Kason Yang
  */
 public interface TemplateSource {
 
+  /**
+   * Get the name of template.
+   * 
+   * @return the name
+   */
   String getName();
 
   /**
-   * get the content of template
-   *
-   * @return
-   * @throws IOException
+   * Get the content of template.
+   * 
+   * @return the content of template
    */
-  String getContent() throws IOException;
-
-  /**
-   * get the key for cache
-   *
-   * @return the key for cache,return null if can not be cache.
-   */
-  @Nullable
-  String getCacheKey();
+  String getContent();
 
   /**
    * Get the path of template. Just for the convenience of debugging.
    *
-   * @return
+   * @return the path
    */
   String getPath();
+
+  /**
+   * Get the last modified time of template.
+   * @return the timestamp
+   */
+  long lastModified();
 
 }

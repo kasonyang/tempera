@@ -102,16 +102,16 @@ public class TemplateParser {
 
   private final TypeNameResolver typeNameResolver;
 
-  public TemplateParser(String templateName, String template,String leftDelimiter,String rightDelimiter, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
-    this(templateName, new TexTokenStream(new TexLexer(template,leftDelimiter,rightDelimiter), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
+  public TemplateParser(String className,String templateName, String template,String leftDelimiter,String rightDelimiter, TemplateAstLoader astLoader, TemplateClassLoader classLoader) {
+    this(className,templateName, new TexTokenStream(new TexLexer(template,leftDelimiter,rightDelimiter), TexTokenType.CHANNEL_DEFAULT), astLoader, classLoader);
   }
 
-  public TemplateParser(String templateName, TokenStream ts, TemplateAstLoader templateAstLoader, TemplateClassLoader classParser) {
+  public TemplateParser(String className,String templateName, TokenStream ts, TemplateAstLoader templateAstLoader, TemplateClassLoader classParser) {
     this.classParser = classParser;
     this.astLoader = templateAstLoader;
     this.tokenStream = new BufferedTokenStream(ts);
     ClassNode cn = new ClassNode();
-    cn.name = templateName;
+    cn.name = className;
     cn.modifier = Modifier.PUBLIC;
     try {
       cn.superType = Types.getClassType(Renderer.class.getName());
@@ -314,7 +314,7 @@ public class TemplateParser {
   }
 
   private Statement text() throws LexException {
-    Statement res = getCallStmt("append", new ConstExpr(token.getText()));
+    Statement res = getCallStmt("rawAppend", new ConstExpr(token.getText()));
     consume();
     return res;
   }
@@ -538,27 +538,33 @@ public class TemplateParser {
         return layout();
       case REPLACE:
         return replace();
+      case BIT_AND:
+        return rawExpr();
       default:
         if(isExprPrefix(la1.getTokenType())){
           ExprStmt res;
           expect(START_TAG);
           ExprNode expr = this.expr();
-          if(isToken(PIPE)){
-            while(isToken(PIPE)){
-              consume();
-              String filterName = expect(IDENTITY).getText();
-              expr = this.getCallExpr("callFilter", new ConstExpr(filterName),expr);
-            }
-            res = getCallStmt("rawAppend",expr);
-          }else{
-            res = getCallStmt("append", expr);
+          while(isToken(PIPE)){
+            consume();
+            String filterName = expect(IDENTITY).getText();
+            expr = this.getCallExpr("callFilter", new ConstExpr(filterName),expr);
           }
+          res = getCallStmt("append", expr);
           expect(END_TAG);
           return res;
         }else{
           return null;
         }
     }
+  }
+  
+  private Statement rawExpr() throws LexException{
+    expect(START_TAG);
+    expect(BIT_AND);
+    ExprNode e = expr();
+    expect(END_TAG);
+    return this.getCallStmt("rawAppend",e);
   }
   
   private boolean isExprPrefix(TexTokenType type){

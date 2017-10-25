@@ -2,6 +2,7 @@ package site.kason.tempera.loader;
 
 import site.kason.tempera.source.FileTemplateSource;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,9 +44,13 @@ public class FileTemplateLoader implements TemplateLoader {
       sfx = new String[]{""};
     }
     for (String s : sfx) {
-      File file = new File(this.baseDir, templateName.replace('.', '/') + s);
+      File file = new File(this.baseDir, templateName + s);
       if (file.exists()) {
-        return new FileTemplateSource(templateName , file , this.encoding);
+        try{
+          return new FileTemplateSource(templateName , file , this.encoding);
+        }catch(IOException ex){
+          throw new TemplateNotFoundException("unable to access file:" + file);
+        }
       }
     }
     throw new TemplateNotFoundException("template not found:" + templateName);

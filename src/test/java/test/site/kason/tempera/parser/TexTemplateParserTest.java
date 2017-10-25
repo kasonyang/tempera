@@ -49,7 +49,7 @@ public class TexTemplateParserTest {
           throws Exception {
     TexLexer lexer = new TexLexer(tpl,"{{","}}");
     TokenStream ts = new TexTokenStream(lexer);
-    TemplateParser parser = new TemplateParser("Test", ts, new TemplateAstLoader() {
+    TemplateParser parser = new TemplateParser("Test","Test", ts, new TemplateAstLoader() {
       @Override
       public ClassNode loadTemplateAst(String templateName) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");

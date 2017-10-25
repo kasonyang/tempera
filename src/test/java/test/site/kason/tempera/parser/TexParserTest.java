@@ -26,7 +26,7 @@ public class TexParserTest {
     public void test() throws Exception{
         StringBuilder sb = new StringBuilder();
         sb.append("{{var name:java.lang.String}}Hello,{{name}}!");
-        TemplateParser parser = new TemplateParser("test",sb.toString(),"{{","}}",new TemplateAstLoader() {
+        TemplateParser parser = new TemplateParser("Test","test",sb.toString(),"{{","}}",new TemplateAstLoader() {
             @Override
             public ClassNode loadTemplateAst(String templateName) throws TemplateNotFoundException, LexException, IOException {
                 throw new UnsupportedOperationException("Not supported yet.");

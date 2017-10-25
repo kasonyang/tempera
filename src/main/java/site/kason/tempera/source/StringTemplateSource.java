@@ -11,6 +11,8 @@ public class StringTemplateSource implements TemplateSource {
 
   private final String content;
   private final String sourceName;
+  
+  private final long lastModified = System.currentTimeMillis();
 
   /**
    *
@@ -23,13 +25,8 @@ public class StringTemplateSource implements TemplateSource {
   }
 
   @Override
-  public String getContent() throws IOException {
+  public String getContent(){
     return content;
-  }
-
-  @Override
-  public String getCacheKey() {
-    return this.sourceName;
   }
 
   @Override
@@ -40,6 +37,11 @@ public class StringTemplateSource implements TemplateSource {
   @Override
   public String getName() {
     return this.sourceName;
+  }
+
+  @Override
+  public long lastModified() {
+    return this.lastModified;
   }
 
 }

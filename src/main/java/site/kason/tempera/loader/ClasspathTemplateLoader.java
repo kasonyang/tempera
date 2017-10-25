@@ -16,9 +16,13 @@ import site.kason.tempera.engine.TemplateSource;
 public class ClasspathTemplateLoader implements TemplateLoader {
 
   private final String[] suffixs;
+  
+  private String encoding = "utf-8";
+  
+  private String path = "/";
 
   public ClasspathTemplateLoader() {
-    this(new String[]{".tplx"});
+    this(null);
   }
 
   public ClasspathTemplateLoader(@Nullable String[] suffixs) {
@@ -28,14 +32,43 @@ public class ClasspathTemplateLoader implements TemplateLoader {
     this.suffixs = suffixs;
   }
 
+  public String getPath() {
+    return path;
+  }
+
+  /**
+   * Specify the path to search templates
+   * @param path the path
+   */
+  public void setPath(String path) {
+    if(!path.startsWith("/")){
+      path = "/" + path;
+    }
+    if(!path.endsWith("/")){
+      path += "/";
+    }
+    this.path = path;
+  }
+
+  public String getEncoding() {
+    return encoding;
+  }
+
+  public void setEncoding(String encoding) {
+    this.encoding = encoding;
+  }
+
   @Override
   public TemplateSource load(String templateName) throws TemplateNotFoundException {
+    if(templateName.startsWith("/")){
+      templateName = templateName.substring(1);
+    }
     for (String s : suffixs) {
-      String fullName = '/' + templateName.replace('.', '/') + s;
+      String fullName = path + templateName + s;
       InputStream is = ClasspathTemplateLoader.class.getResourceAsStream(fullName);
       if (is != null) {
         try {
-          String content = InputStreamUtil.readAsString(is, "utf-8");
+          String content = InputStreamUtil.readAsString(is, encoding);
           return new StringTemplateSource(templateName, content);
         } catch (IOException ex) {
           throw new TemplateNotFoundException(ex);

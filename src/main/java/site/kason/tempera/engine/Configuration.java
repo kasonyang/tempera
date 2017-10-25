@@ -5,13 +5,17 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
-import site.kason.tempera.filters.HtmlFilter;
-import site.kason.tempera.filters.JsFilter;
-import site.kason.tempera.filters.JsonFilter;
+import site.kason.tempera.html.JsFilter;
+import site.kason.tempera.html.JsonFilter;
 import site.kason.tempera.filters.LowerFilter;
-import site.kason.tempera.filters.RawFilter;
 import site.kason.tempera.filters.UpperFilter;
+import site.kason.tempera.functions.FormatFunction;
+import site.kason.tempera.functions.LeftFunction;
+import site.kason.tempera.functions.RightFunction;
+import site.kason.tempera.html.HtmlEscapeHandler;
 import site.kason.tempera.loader.ClasspathTemplateLoader;
+import site.kason.tempera.parser.ClassNameStrategy;
+import site.kason.tempera.parser.DefaultClassNameStrategy;
 
 /**
  *
@@ -19,19 +23,23 @@ import site.kason.tempera.loader.ClasspathTemplateLoader;
  */
 public class Configuration {
   
+  private final static ClassNameStrategy DEFAULT_CLASS_NAME_STRATEGY = new DefaultClassNameStrategy();
+  
   public final static Configuration DEFAULT;
   public final static Configuration DEFAULT_HTML;
   static{
     DEFAULT = new Configuration();
     DEFAULT.setTemplateLoader(new ClasspathTemplateLoader());
-    DEFAULT.registerFilter("html", new HtmlFilter());
-    DEFAULT.registerFilter("js", new JsFilter());
-    DEFAULT.registerFilter("json", new JsonFilter());
     DEFAULT.registerFilter("lower", new LowerFilter());
-    DEFAULT.registerFilter("raw", new RawFilter());
     DEFAULT.registerFilter("upper", new UpperFilter());
+    DEFAULT.registerFunction("format", new FormatFunction());
+    DEFAULT.registerFunction("left", new LeftFunction());
+    DEFAULT.registerFunction("right", new RightFunction());
+    
     DEFAULT_HTML = new Configuration(DEFAULT);
-    DEFAULT_HTML.setDefaultFilter("html");
+    DEFAULT_HTML.registerFilter("js", new JsFilter());
+    DEFAULT_HTML.registerFilter("json", new JsonFilter());
+    DEFAULT_HTML.setEscapeHandler(new HtmlEscapeHandler());
   }
   
   private String cacheDir;
@@ -44,11 +52,13 @@ public class Configuration {
   
   private Map<String,Filter> filters = new HashMap();
   
-  private String defaultFilter = "";
+  private EscapeHandler escapeHandler;
   
   private String leftDelimiter = "{{";
   
   private String rightDelimiter = "}}";
+  
+  private ClassNameStrategy classNameStrategy = DEFAULT_CLASS_NAME_STRATEGY;
 
   public Configuration() {
   }
@@ -59,7 +69,8 @@ public class Configuration {
     this.templateLoader = config.getTemplateLoader();
     this.filters.putAll(config.getFilters());
     this.functions.putAll(config.getFunctions());
-    this.defaultFilter = config.getDefaultFilter();
+    this.escapeHandler = config.getEscapeHandler();
+    this.classNameStrategy = config.getClassNameStrategy();
   }  
   
   @Nullable
@@ -104,13 +115,14 @@ public class Configuration {
   public Map<String,Function> getFunctions(){
     return this.functions;
   }
-  
-  public String getDefaultFilter() {
-    return defaultFilter;
+
+  @Nullable
+  public EscapeHandler getEscapeHandler() {
+    return escapeHandler;
   }
 
-  public void setDefaultFilter(String defaultFilter) {
-    this.defaultFilter = defaultFilter;
+  public void setEscapeHandler(EscapeHandler escapeHandler) {
+    this.escapeHandler = escapeHandler;
   }
 
   public String getLeftDelimiter() {
@@ -127,6 +139,14 @@ public class Configuration {
 
   public void setRightDelimiter(String rightDelimiter) {
     this.rightDelimiter = rightDelimiter;
+  }
+
+  public ClassNameStrategy getClassNameStrategy() {
+    return classNameStrategy;
+  }
+
+  public void setClassNameStrategy(ClassNameStrategy classNameStrategy) {
+    this.classNameStrategy = classNameStrategy;
   }
 
 }

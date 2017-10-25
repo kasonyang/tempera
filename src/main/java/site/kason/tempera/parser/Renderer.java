@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import site.kason.tempera.engine.EscapeHandler;
 import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.IterateContext;
@@ -33,11 +34,12 @@ public abstract class Renderer {
   }
 
   protected Writer append(Object obj) throws IOException {
-    Filter[] defaultFilters = renderContext.getDefaultFilters();
-    for (Filter f : defaultFilters) {
-      obj = f.filter(obj);
+    String value = String.valueOf(obj);
+    EscapeHandler escapeHandler = renderContext.getEscapeHandler();
+    if(escapeHandler!=null){
+      value = escapeHandler.escape(value);
     }
-    return this.rawAppend(obj);
+    return this.rawAppend(value);
   }
   
   protected Writer rawAppend(Object obj) throws IOException{

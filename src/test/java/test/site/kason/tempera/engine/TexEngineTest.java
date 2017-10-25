@@ -1,6 +1,7 @@
 package test.site.kason.tempera.engine;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import site.kason.tempera.engine.Configuration;
 import site.kason.tempera.loader.StringTemplateLoader;
 import site.kason.tempera.engine.Template;
 import site.kason.tempera.engine.Engine;
+import site.kason.tempera.loader.ClasspathTemplateLoader;
 import site.kason.tempera.parser.TemplateClassLoader;
 
 /**
@@ -41,7 +43,7 @@ public class TexEngineTest {
   @Test
   public void test() throws Exception {
     Engine engine = new Engine();
-    Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello.template", null);
+    Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello.template");
     StringWriter stringWriter = new StringWriter();
     tpl.render(Collections.singletonMap("name", "world"),stringWriter);
     String result = stringWriter.toString();
@@ -52,8 +54,12 @@ public class TexEngineTest {
   public void testResources() throws Exception{
     String[] names = new String[]{"A","B","C"};
     List<String> list = Arrays.asList(names);
-    Engine engine = new Engine();
-    Template tpl = engine.compile("templates.main");
+    ClasspathTemplateLoader templateLoader = new ClasspathTemplateLoader(new String[]{".tplx"});
+    templateLoader.setPath("/templates/");
+    Configuration conf  = new Configuration(Configuration.DEFAULT);
+    conf.setTemplateLoader(templateLoader);
+    Engine engine = new Engine(conf);
+    Template tpl = engine.compile("/main");
     tpl.render(Collections.singletonMap("names", list),new StringWriter());
   }
 
@@ -85,6 +91,16 @@ public class TexEngineTest {
     String resultFor = engine.compile("forvar").render(datafor);
     assertEquals("1+2+3+", resultFor);
 
+  }
+  
+  @Test
+  public void testReload() throws IOException{
+    String tplName = "hello";
+    Engine engine = new Engine();
+    Template tpl = engine.compileInline("hello",tplName);
+    Template tpl2 = engine.compileInline("hi", tplName);
+    assertEquals("hello", tpl.render(Collections.EMPTY_MAP));
+    assertEquals("hi", tpl2.render(Collections.EMPTY_MAP));
   }
 
 }

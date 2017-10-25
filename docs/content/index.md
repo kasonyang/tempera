@@ -21,7 +21,7 @@ The performance test could be found here:[https://github.com/kasonyang/template-
 
 gradle
 
-    compile 'site.kason:tempera:VERSION'
+    compile "site.kason:tempera:$VERSION"
 
 
 # Get started
@@ -29,21 +29,21 @@ gradle
 compile template from string:
 
     Engine engine = new Engine();
-    Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello.template", null);
+    Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello");
     String result = tpl.render(Collections.singletonMap("name", "world"));
     assertEquals("hello,world!", result);
 
 compile template from resource:
 
     Engine engine = new Engine();
-    Template tpl = engine.compile("templates.main");//compile template from resource:/templates/main.tplx
+    Template tpl = engine.compile("templates/main.tpr");//compile template from resource:/templates/main.tpr
     tpl.render(Collections.singletonMap("names", list),new StringWriter());
 
 compile template from file system:
 
     Configuration conf = new Configuration(Configuration.DEFAULT);
     conf.setTemplateLoader(new FileTemplateLoader("."));
-    Template tpl = engine.compile("templates.main");//compile template from file: ./templates/main.tplx
+    Template tpl = engine.compile("templates/main.tpr");//compile template from file: ./templates/main.tpr
     tpl.render(Collections.singletonMap("names", list),new StringWriter());
 
 # Declaring variables
@@ -154,6 +154,77 @@ Register custom functions:
 
     Configuration conf = new Configuration(Configuration.DEFAULT);
     conf.registerFunction("XXX", new XXXFunction());
+
+# Spring integration
+
+Implements ViewResolver:
+
+    public class TemperaView implements View {
+
+      private final Template template;
+
+      public TemperaView(Template template) {
+        this.template = template;
+      }
+
+      @Override
+      public String getContentType() {
+        return null;
+      }
+
+      @Override
+      public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map<String, Object> data = new HashMap(model);
+        template.render(data, response.getWriter());
+      }
+
+    }
+    
+    public class TemperaViewResolver implements ViewResolver {
+
+      private final Engine engine;
+
+      public TemperaViewResolver(Engine engine) {
+        this.engine = engine;
+      }
+
+      private final Map<Template, TemperaView> views = new ConcurrentHashMap();
+
+      @Override
+      public View resolveViewName(String viewName, Locale locale) throws Exception {
+        Template tpl = engine.compile(viewName);
+        TemperaView view = views.get(tpl);
+        if (view == null) {
+          synchronized (views) {
+            view = views.get(tpl);
+            if (view == null) {
+              view = new TemperaView(tpl);
+              views.put(tpl, view);
+            }
+          }
+        }
+        return view;
+      }
+
+    }
+
+Create `viewResolver` bean in your `Application` class:
+
+    @SpringBootApplication
+    public class Application extends SpringBootServletInitializer {
+
+      public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+      }
+
+      @Bean
+      public ViewResolver viewResolver() {
+        TemperaViewResolver vr = new TemperaViewResolver(new Engine());
+        return vr;
+      }
+      
+    }
+
 
 # Miscellaneous
 

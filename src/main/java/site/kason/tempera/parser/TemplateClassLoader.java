@@ -12,31 +12,34 @@ import javax.annotation.Nullable;
  *
  * @author Kason Yang
  */
-public class TemplateClassLoader extends ClassLoader{
-    
-    private final File cacheDir;
+public class TemplateClassLoader extends ClassLoader {
 
-    public TemplateClassLoader(@Nullable ClassLoader parent,@Nullable File cacheDir) {
-        super(parent);
-        this.cacheDir = cacheDir;
-    }
+  private final File cacheDir;
 
-    public TemplateClassLoader() {
-        this(TemplateClassLoader.class.getClassLoader(),null);
+  public TemplateClassLoader(@Nullable ClassLoader parent, @Nullable File cacheDir) {
+    super(parent);
+    this.cacheDir = cacheDir;
+  }
+
+  public TemplateClassLoader() {
+    this(TemplateClassLoader.class.getClassLoader(), null);
+  }
+
+  public Class generateTemplateClass(String name, byte[] bytes) {
+    if (cacheDir != null) {
+      String fileName = name.replace(".", "/") + ".class";
+      File outFile = new File(cacheDir.getAbsolutePath(), fileName);
+      File outDir = outFile.getParentFile();
+      if(!outDir.exists() && !outDir.mkdirs()){
+        throw new RuntimeException("unable to create output directory:" + outDir);
+      }
+      try (FileOutputStream os = new FileOutputStream(outFile)) {      
+        os.write(bytes);
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
     }
-    
-    public Class generateTemplateClass(String name,byte[] bytes){
-        if(cacheDir!=null){
-            String fileName = name.replace(".", "/") + ".class";
-            try {
-                try (FileOutputStream os = new FileOutputStream(new File(cacheDir.getAbsolutePath(),fileName))) {
-                    os.write(bytes);
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(TemplateClassLoader.class.getName()).log(Level.SEVERE, null, ex);
-            }            
-        }
-        return this.defineClass(name, bytes,0,bytes.length);
-    }
-    
+    return this.defineClass(name, bytes, 0, bytes.length);
+  }
+
 }

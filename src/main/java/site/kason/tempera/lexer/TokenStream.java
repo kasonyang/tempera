@@ -8,6 +8,11 @@ import site.kason.klex.LexException;
  */
 public interface TokenStream {
   
+  /**
+   * Get the next token
+   * @return the token
+   * @throws LexException if lex exception occurs 
+   */
   public TexToken nextToken() throws LexException;
   
 }

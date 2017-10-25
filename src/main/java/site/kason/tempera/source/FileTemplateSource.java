@@ -16,25 +16,18 @@ public class FileTemplateSource implements TemplateSource {
   File file;
   String name;
   private final String encoding;
+  private final String content;
 
-  public FileTemplateSource(String name,File file, String encoding) {
+  public FileTemplateSource(String name,File file, String encoding) throws IOException {
     this.file = file;
     this.encoding = encoding;
     this.name = name;
+    this.content = FileUtils.readFileToString(file, encoding);
   }
 
   @Override
-  public String getContent() throws IOException {
-    return FileUtils.readFileToString(file, encoding);
-  }
-
-  @Override
-  public String getCacheKey() {
-    try {
-      return file.getCanonicalPath() + file.lastModified();
-    } catch (IOException ex) {
-      return null;
-    }
+  public String getContent(){
+    return content;
   }
 
   @Override
@@ -49,6 +42,11 @@ public class FileTemplateSource implements TemplateSource {
   @Override
   public String getName() {
     return this.name;
+  }
+
+  @Override
+  public long lastModified() {
+    return this.file.lastModified();
   }
 
 }
