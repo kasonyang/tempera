@@ -155,6 +155,77 @@ Register custom functions:
     Configuration conf = new Configuration(Configuration.DEFAULT);
     conf.registerFunction("XXX", new XXXFunction());
 
+# Spring integration
+
+Implements ViewResolver:
+
+    public class TemperaView implements View {
+
+      private final Template template;
+
+      public TemperaView(Template template) {
+        this.template = template;
+      }
+
+      @Override
+      public String getContentType() {
+        return null;
+      }
+
+      @Override
+      public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map<String, Object> data = new HashMap(model);
+        template.render(data, response.getWriter());
+      }
+
+    }
+    
+    public class TemperaViewResolver implements ViewResolver {
+
+      private final Engine engine;
+
+      public TemperaViewResolver(Engine engine) {
+        this.engine = engine;
+      }
+
+      private final Map<Template, TemperaView> views = new ConcurrentHashMap();
+
+      @Override
+      public View resolveViewName(String viewName, Locale locale) throws Exception {
+        Template tpl = engine.compile(viewName);
+        TemperaView view = views.get(tpl);
+        if (view == null) {
+          synchronized (views) {
+            view = views.get(tpl);
+            if (view == null) {
+              view = new TemperaView(tpl);
+              views.put(tpl, view);
+            }
+          }
+        }
+        return view;
+      }
+
+    }
+
+Create `viewResolver` bean in your `Application` class:
+
+    @SpringBootApplication
+    public class Application extends SpringBootServletInitializer {
+
+      public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+      }
+
+      @Bean
+      public ViewResolver viewResolver() {
+        TemperaViewResolver vr = new TemperaViewResolver(new Engine());
+        return vr;
+      }
+      
+    }
+
+
 # Miscellaneous
 
 The class of context variable in for statement:
