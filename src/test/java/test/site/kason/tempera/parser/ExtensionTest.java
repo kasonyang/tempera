@@ -14,6 +14,7 @@ public class ExtensionTest extends TestBase {
   public ExtensionTest() {
   }
   
+  @Test
   public void test() throws IOException{
     assertRender("he", "{{left(\"hello\",2)}}");
     assertRender("hello", "{{left(\"hello\",100)}}");

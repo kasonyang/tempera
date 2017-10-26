@@ -16,8 +16,13 @@ public class LeftFunction implements Function {
       case 1:
         return String.valueOf(arguments[0]);
       default:
-        Integer len = (Integer) arguments[1];
-        return String.valueOf(arguments[0]).substring(0, len);
+        String str = String.valueOf(arguments[0]);
+        Number lenArg = (Number) arguments[1];
+        int len = lenArg.intValue();
+        if(len>str.length()){
+          len = str.length();
+        }
+        return str.substring(0, len);
     }
   }
 

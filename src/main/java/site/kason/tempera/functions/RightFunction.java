@@ -17,9 +17,9 @@ public class RightFunction implements Function {
         return String.valueOf(arguments[0]);
       default:
         String val = String.valueOf(arguments[0]);
-        Integer len = (Integer) arguments[1];
+        Number lenArg = (Number) arguments[1];
         int size = val.length();
-        int offset = size - len;
+        int offset = size - lenArg.intValue();
         if(offset < 0){
           offset = 0;
         }
