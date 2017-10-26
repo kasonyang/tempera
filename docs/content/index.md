@@ -139,6 +139,11 @@ Specify the default filter:
     Configuration conf = new Configuration(Configuration.DEFAULT);
     conf.setDefaultFilter("html");
 
+Build-in filters in `Configuration.DEFAULT`:
+
+0. lower
+0. upper
+
 Register custom filters:
 
     Configuration conf = new Configuration(Configuration.DEFAULT);
@@ -154,6 +159,12 @@ Register custom functions:
 
     Configuration conf = new Configuration(Configuration.DEFAULT);
     conf.registerFunction("XXX", new XXXFunction());
+
+Build-in functions in `Configuration.DEFAULT`
+
+0. format (String format,Object... arguments) - format values using `String.format`
+0. left (Object str,Number count)
+0. right (Object str,Number count)
 
 # Spring integration
 
