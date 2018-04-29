@@ -23,7 +23,6 @@ import kalang.ast.ExprNode;
 import kalang.ast.ExprStmt;
 import kalang.ast.IfStmt;
 import kalang.ast.LocalVarNode;
-import kalang.ast.LogicExpr;
 import kalang.ast.LoopStmt;
 import kalang.ast.MethodNode;
 import kalang.ast.MultiStmtExpr;
@@ -33,7 +32,6 @@ import kalang.ast.ObjectFieldExpr;
 import kalang.ast.ObjectInvokeExpr;
 import kalang.ast.ParameterExpr;
 import kalang.ast.ParameterNode;
-import kalang.ast.ReturnStmt;
 import kalang.ast.Statement;
 import kalang.ast.ThisExpr;
 import kalang.ast.UnaryExpr;
@@ -55,13 +53,10 @@ import kalang.tool.MemoryOutputManager;
 import kalang.util.AstUtil;
 import kalang.util.BoxUtil;
 import kalang.util.NameUtil;
-import kalang.util.OffsetRangeHelper;
 import kalang.util.StringLiteralUtil;
 import site.kason.tempera.engine.TemplateAstLoader;
 import site.kason.tempera.engine.TemplateNotFoundException;
-import site.kason.tempera.extension.Function;
 import site.kason.klex.LexException;
-import site.kason.klex.OffsetRange;
 import site.kason.tempera.lexer.BufferedTokenStream;
 import site.kason.tempera.lexer.TexLexer;
 import site.kason.tempera.lexer.TexToken;
@@ -114,7 +109,7 @@ public class TemplateParser {
     cn.name = className;
     cn.modifier = Modifier.PUBLIC;
     try {
-      cn.superType = Types.getClassType(Renderer.class.getName());
+      cn.setSuperType(Types.getClassType(Renderer.class.getName()));
     } catch (AstNotFoundException ex) {
       throw Exceptions.unknownException(ex);
     }
@@ -258,8 +253,13 @@ public class TemplateParser {
     }
   }
 
-  private ExprNode getCallExpr(String methodNmae, ExprNode... args) {
-    return getCallExpr(new ThisExpr(Types.getClassType(this.classNode)), methodNmae, args);
+  private ExprNode getCallExpr(String methodName, ExprNode... args) {
+    return getCallExpr(
+            new ThisExpr(Types.getClassType(this.classNode))
+            , methodName
+            , classNode
+            ,  args
+    );
   }
 
   private ExprNode getNamedExpr(TexToken token) {
@@ -285,9 +285,9 @@ public class TemplateParser {
     throw Exceptions.varUndefinedException(token);
   }
 
-  private ExprNode getCallExpr(ExprNode target, String methodName, ExprNode... args) {
+  private ExprNode getCallExpr(ExprNode target, String methodName, ClassNode caller, ExprNode... args) {
     try {
-      ObjectInvokeExpr expr = ObjectInvokeExpr.create(target, methodName, args);
+      ObjectInvokeExpr expr = ObjectInvokeExpr.create(target, methodName, args,caller);
       return expr;
     } catch (MethodNotFoundException | AmbiguousMethodException ex) {
       throw Exceptions.unknownException(ex);
@@ -406,13 +406,13 @@ public class TemplateParser {
     forStmt.statements.add(new VarDeclStmt(iterTmpVar));
     forStmt.statements.add(new ExprStmt(new AssignExpr(new VarExpr(iteratorVar), this.getCallExpr("createIterateContext", collectionExpr))));
 
-    ExprNode loopCondition = this.getCallExpr(new VarExpr(iteratorVar), "hasNext");
+    ExprNode loopCondition = this.getCallExpr(new VarExpr(iteratorVar), "hasNext",classNode);
     LoopStmt loopStmt = new LoopStmt(loopCondition, null);
     loopStmt.getLoopBody().statements.add(
             new ExprStmt(
                     new AssignExpr(
                             new VarExpr(iterTmpVar), new CastExpr(
-                                    elementType, this.getCallExpr(new VarExpr(iteratorVar), "next")
+                                    elementType, this.getCallExpr(new VarExpr(iteratorVar), "next",classNode)
                             )
                     )
             )
@@ -441,7 +441,7 @@ public class TemplateParser {
     this.exitMethod();
     expectEnclosdTag(END_PLACEHOLDER);
     try {
-      return new ExprStmt(ObjectInvokeExpr.create(new ThisExpr(this.classNode), methodName, arguments));
+      return new ExprStmt(ObjectInvokeExpr.create(new ThisExpr(this.classNode), methodName, arguments,classNode));
     } catch (MethodNotFoundException | AmbiguousMethodException ex) {
       throw Exceptions.unknownException(ex);
     }
@@ -458,7 +458,7 @@ public class TemplateParser {
     ClassNode layoutClass = this.classNode = new ClassNode(clazzName, Modifier.PUBLIC);
     this.createDataField(layoutClass);
     this.classes.add(layoutClass);
-    classNode.superType = Types.getClassType(parentAst);
+    classNode.setSuperType(Types.getClassType(parentAst));
     this.body();
     AstUtil.createEmptyConstructor(classNode);
     classNode = oldClass;
@@ -486,7 +486,7 @@ public class TemplateParser {
     expect(END_TAG);
     String replaceId = replaceToken.getText();
     String replateMethodName = this.createPlaceholderMethodName(replaceId);
-    ObjectType superType = this.classNode.superType;
+    ObjectType superType = this.classNode.getSuperType();
     if (superType == null) {
       throw Exceptions.unknownException("super type is null");
     }
