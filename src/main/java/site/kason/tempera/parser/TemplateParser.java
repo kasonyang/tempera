@@ -578,7 +578,7 @@ public class TemplateParser {
   }
 
   private ExprNode expr() throws LexException {
-    ExprNode expr = this.expr_logic_and_or();
+    ExprNode expr = this.expr_logic_or();
     if(isToken(CONDITIONAL)){
       consume();
       List<Statement> statements = new LinkedList();
@@ -619,15 +619,21 @@ public class TemplateParser {
     }
   }
 
-  private ExprNode expr_logic_and_or() throws LexException {
+  private ExprNode expr_logic_and() throws LexException {
     ExprNode expr1 = this.expr_equals();
     if (isToken(LOGIC_AND)) {
       consume();
       ExprNode expr2 = this.expr_equals();
       return this.getCallExpr("and", expr1,expr2);
-    } else if (isToken(LOGIC_OR)) {
+    }
+    return expr1;
+  }
+  
+  private ExprNode expr_logic_or() throws LexException {
+    ExprNode expr1 = this.expr_logic_and();
+    if (isToken(LOGIC_OR)) {
       consume();
-      ExprNode expr2 = this.expr_equals();
+      ExprNode expr2 = this.expr_logic_and();
       return this.getCallExpr("or", expr1,expr2);
     }
     return expr1;
