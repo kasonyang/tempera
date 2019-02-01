@@ -6,11 +6,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nullable;
-import kalang.AstNotFoundException;
-import kalang.ast.ClassNode;
-import kalang.compiler.AstLoader;
-import kalang.compiler.JavaAstLoader;
-import kalang.exception.Exceptions;
+
+import kalang.compiler.AstNotFoundException;
+import kalang.compiler.ast.ClassNode;
+import kalang.compiler.compile.AstLoader;
+import kalang.compiler.compile.JavaAstLoader;
+import kalang.compiler.exception.Exceptions;
 import site.kason.tempera.extension.Filter;
 import site.kason.tempera.extension.Function;
 import site.kason.tempera.model.RenderContext;

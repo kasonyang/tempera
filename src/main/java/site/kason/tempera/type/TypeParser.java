@@ -2,9 +2,10 @@ package site.kason.tempera.type;
 
 import java.util.LinkedList;
 import java.util.List;
-import kalang.AstNotFoundException;
-import kalang.core.Type;
-import kalang.core.Types;
+
+import kalang.compiler.AstNotFoundException;
+import kalang.compiler.core.Type;
+import kalang.compiler.core.Types;
 import site.kason.klex.LexException;
 import static site.kason.tempera.type.TypeTokenInfo.*;
 

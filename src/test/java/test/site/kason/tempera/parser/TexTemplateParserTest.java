@@ -7,9 +7,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import kalang.AstNotFoundException;
-import kalang.ast.ClassNode;
-import kalang.compiler.AstLoader;
+
+import kalang.compiler.AstNotFoundException;
+import kalang.compiler.ast.ClassNode;
+import kalang.compiler.compile.AstLoader;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import site.kason.tempera.engine.TemplateAstLoader;

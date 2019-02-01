@@ -4,7 +4,6 @@
 /.gradle/
 /.settings/
 /build/
-.gitignore
 /nbproject/
 /docs/output/
-!/.gitignore
+/.idea/

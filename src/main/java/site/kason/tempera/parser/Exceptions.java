@@ -1,8 +1,8 @@
 package site.kason.tempera.parser;
 
 import javax.annotation.Nullable;
-import kalang.core.Type;
-import site.kason.klex.LexException;
+
+import kalang.compiler.core.Type;
 import site.kason.klex.OffsetRange;
 import site.kason.tempera.lexer.TexToken;
 import site.kason.tempera.lexer.TexTokenType;
@@ -49,7 +49,7 @@ public class Exceptions {
         return new SemanticException(token.getOffset(),name + " is undefined.");
     }
     
-    public static SemanticException notIterableType(Type type,OffsetRange offset){
+    public static SemanticException notIterableType(Type type, OffsetRange offset){
         return new SemanticException(offset , type + " is not interable.");
     }
 

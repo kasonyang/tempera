@@ -1,9 +1,10 @@
 package test.site.kason.tempera.parser;
 
 import java.io.IOException;
-import kalang.AstNotFoundException;
-import kalang.ast.ClassNode;
-import kalang.compiler.AstLoader;
+
+import kalang.compiler.AstNotFoundException;
+import kalang.compiler.ast.ClassNode;
+import kalang.compiler.compile.AstLoader;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import site.kason.tempera.engine.TemplateAstLoader;

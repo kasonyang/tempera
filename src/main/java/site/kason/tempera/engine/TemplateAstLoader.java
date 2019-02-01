@@ -1,8 +1,9 @@
 package site.kason.tempera.engine;
 
 import java.io.IOException;
-import kalang.AstNotFoundException;
-import kalang.ast.ClassNode;
+
+import kalang.compiler.AstNotFoundException;
+import kalang.compiler.ast.ClassNode;
 import site.kason.klex.LexException;
 
 /**

@@ -1,6 +1,6 @@
 package site.kason.tempera.util;
 
-import kalang.ast.ExprNode;
+import kalang.compiler.ast.ExprNode;
 import site.kason.klex.OffsetRange;
 
 /**
@@ -10,7 +10,7 @@ import site.kason.klex.OffsetRange;
 public class OffsetUtil {
     
     public static OffsetRange getOffsetOfExprNode(ExprNode expr){
-        kalang.compiler.OffsetRange os = expr.offset;
+        kalang.compiler.compile.OffsetRange os = expr.offset;
         return new OffsetRange(os.startOffset, os.stopOffset, os.startLine, os.startLineColumn, os.stopLine, os.stopLineColumn);
     }
 

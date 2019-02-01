@@ -1,10 +1,11 @@
 package test.site.kason.tempera.type;
 
 import java.util.List;
-import kalang.AstNotFoundException;
-import kalang.core.Type;
-import kalang.core.Types;
 import static org.junit.Assert.*;
+
+import kalang.compiler.AstNotFoundException;
+import kalang.compiler.core.Type;
+import kalang.compiler.core.Types;
 import org.junit.Test;
 import site.kason.klex.LexException;
 import site.kason.tempera.type.TypeLexer;
