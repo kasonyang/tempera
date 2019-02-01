@@ -28,6 +28,7 @@ gradle
 
 compile template from string:
 
+    import site.kason.tempera.engine.*;
     Engine engine = new Engine();
     Template tpl = engine.compileInline("{{var name:String}}hello,{{name}}!", "hello");
     String result = tpl.render(Collections.singletonMap("name", "world"));
@@ -35,14 +36,19 @@ compile template from string:
 
 compile template from resource:
 
-    Engine engine = new Engine();
+    import site.kason.tempera.engine.*;
+    Configuration conf = new Configuration(Configuration.DEFAULT);
+    conf.registerClasspathTemplateLoader();
+    Engine engine = new Engine(conf);
     Template tpl = engine.compile("templates/main.tpr");//compile template from resource:/templates/main.tpr
     tpl.render(Collections.singletonMap("names", list),new StringWriter());
 
 compile template from file system:
 
+    import site.kason.tempera.engine.*;
     Configuration conf = new Configuration(Configuration.DEFAULT);
-    conf.setTemplateLoader(new FileTemplateLoader("."));
+    conf.registerFileTemplateLoader(new File("."));
+    Engine engine = new Engine(conf);
     Template tpl = engine.compile("templates/main.tpr");//compile template from file: ./templates/main.tpr
     tpl.render(Collections.singletonMap("names", list),new StringWriter());
 

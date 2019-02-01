@@ -57,7 +57,7 @@ public class TexEngineTest {
     ClasspathTemplateLoader templateLoader = new ClasspathTemplateLoader(new String[]{".tplx"});
     templateLoader.setPath("/templates/");
     Configuration conf  = new Configuration(Configuration.DEFAULT);
-    conf.setTemplateLoader(templateLoader);
+    conf.registerTemplateLoader(templateLoader);
     Engine engine = new Engine(conf);
     Template tpl = engine.compile("/main");
     tpl.render(Collections.singletonMap("names", list),new StringWriter());
@@ -69,7 +69,7 @@ public class TexEngineTest {
     FileUtils.forceMkdir(templateOutDir);
     StringTemplateLoader tpls = new StringTemplateLoader();
     Configuration conf = new Configuration();
-    conf.setTemplateLoader(tpls);
+    conf.registerTemplateLoader(tpls);
     conf.setCacheDir(templateOutDir.getAbsolutePath());
     Engine engine = new Engine(conf);
 

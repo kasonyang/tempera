@@ -57,8 +57,8 @@ public class Main {
     String classPath = cl.getOptionValue("cp", ".");
     Configuration conf = new Configuration(Configuration.DEFAULT);
     conf.setCacheDir(outPath);
-    FileTemplateLoader tloader = new FileTemplateLoader(srcPath,new String[]{".tplx"},"utf-8");
-    conf.setTemplateLoader(tloader);
+    FileTemplateLoader tloader = new FileTemplateLoader(new File(srcPath),new String[]{".tplx"},"utf-8");
+    conf.registerTemplateLoader(tloader);
     try{
       conf.setClassLoader(new URLClassLoader(new URL[]{new File(classPath).toURI().toURL()}));
     }catch(MalformedURLException ex){

@@ -22,7 +22,7 @@ public class Main {
         ClasspathTemplateLoader templateLoader = new ClasspathTemplateLoader(new String[]{".tplx"});
         templateLoader.setPath("/templates/");
         Configuration conf = new Configuration(Configuration.DEFAULT);
-        conf.setTemplateLoader(templateLoader);
+        conf.registerTemplateLoader(templateLoader);
         Engine engine = new Engine(conf);
         Template tpl = engine.compile("/main");
         tpl.render(Collections.singletonMap("names", list), new StringWriter());
